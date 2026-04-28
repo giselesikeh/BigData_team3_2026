@@ -1,0 +1,670 @@
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP DATABASE IF EXISTS team3_projectdb CASCADE;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE DATABASE team3_projectdb LOCATION 'project/hive/warehouse';
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> USE team3_projectdb;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SET hive.exec.dynamic.partition = true;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SET hive.exec.dynamic.partition.mode = nonstrict;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SET hive.exec.max.dynamic.partitions = 5000;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SET hive.exec.max.dynamic.partitions.pernode = 5000;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SET hive.enforce.bucketing = true;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SET hive.exec.compress.output = true;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SET parquet.compression = SNAPPY;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SET hive.resultset.use.unique.column.names = false;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- Keep Hive away from the Parquet vectorized timestamp path
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SET hive.vectorized.execution.enabled = false;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SET hive.vectorized.execution.reduce.enabled = false;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SET hive.vectorized.execution.reduce.groupby.enabled = false;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SET hive.vectorized.use.vectorized.input.format = false;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- ============================================================
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- Base external Hive tables over Stage 1 Parquet data
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- Raw time columns are BIGINT because Sqoop Parquet stored them
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- without the timestamp annotation Hive expects.
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- ============================================================
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS accidents;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS locations;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS weather;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS twilight;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS road_features;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE accidents (
+. . . . . . . . . . . . . . . . . . . . . . .>     id            STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     source        STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     severity      INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     start_time    BIGINT,
+. . . . . . . . . . . . . . . . . . . . . . .>     end_time      BIGINT,
+. . . . . . . . . . . . . . . . . . . . . . .>     description   STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     distance_mi   DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     location_id   INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     weather_id    INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     twilight_id   INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     road_feat_id  INT
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION 'project/warehouse/accidents';
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE locations (
+. . . . . . . . . . . . . . . . . . . . . . .>     id         INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     start_lat  DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     start_lng  DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     end_lat    DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     end_lng    DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     street     STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     city       STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     county     STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     state      STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     zipcode    STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     timezone   STRING
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION 'project/warehouse/locations';
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE weather (
+. . . . . . . . . . . . . . . . . . . . . . .>     id                 INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     airport_code       STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     weather_timestamp  BIGINT,
+. . . . . . . . . . . . . . . . . . . . . . .>     temperature_f      DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     wind_chill_f       DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     humidity_pct       DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     pressure_in        DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     visibility_mi      DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     wind_direction     STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     wind_speed_mph     DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     precipitation_in   DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     weather_condition  STRING
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION 'project/warehouse/weather';
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE twilight (
+. . . . . . . . . . . . . . . . . . . . . . .>     id                    INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     sunrise_sunset        STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     civil_twilight        STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     nautical_twilight     STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     astronomical_twilight STRING
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION 'project/warehouse/twilight';
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE road_features (
+. . . . . . . . . . . . . . . . . . . . . . .>     id                INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     amenity           BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     bump              BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     crossing          BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     give_way          BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     junction          BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     no_exit           BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     railway           BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     roundabout        BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     station           BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     stop              BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     traffic_calming   BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     traffic_signal    BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     turning_loop      BOOLEAN
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION 'project/warehouse/road_features';
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- ============================================================
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- Smoke checks on base tables
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- ============================================================
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT COUNT(*) AS accidents_count FROM accidents;
++------------------+
+| accidents_count  |
++------------------+
+| 7728394          |
++------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT COUNT(*) AS locations_count FROM locations;
++------------------+
+| locations_count  |
++------------------+
+| 3803966          |
++------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT COUNT(*) AS weather_count FROM weather;
++----------------+
+| weather_count  |
++----------------+
+| 4369540        |
++----------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT COUNT(*) AS twilight_count FROM twilight;
++-----------------+
+| twilight_count  |
++-----------------+
+| 11              |
++-----------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT COUNT(*) AS road_features_count FROM road_features;
++----------------------+
+| road_features_count  |
++----------------------+
+| 344                  |
++----------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- ============================================================
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- Optimized Hive tables for Stage 2
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- ============================================================
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS locations_part;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS weather_buck;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS twilight_buck;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS road_features_buck;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS accidents_part;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE locations_part (
+. . . . . . . . . . . . . . . . . . . . . . .>     id         INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     start_lat  DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     start_lng  DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     end_lat    DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     end_lng    DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     street     STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     county     STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     zipcode    STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     timezone   STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     city       STRING
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> PARTITIONED BY (state STRING)
+. . . . . . . . . . . . . . . . . . . . . . .> CLUSTERED BY (city) INTO 32 BUCKETS
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION 'project/hive/warehouse/locations_part';
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE weather_buck (
+. . . . . . . . . . . . . . . . . . . . . . .>     id                 INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     airport_code       STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     weather_timestamp  TIMESTAMP,
+. . . . . . . . . . . . . . . . . . . . . . .>     temperature_f      DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     wind_chill_f       DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     humidity_pct       DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     pressure_in        DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     visibility_mi      DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     wind_direction     STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     wind_speed_mph     DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     precipitation_in   DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     weather_condition  STRING
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> CLUSTERED BY (weather_condition) INTO 32 BUCKETS
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION 'project/hive/warehouse/weather_buck';
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE twilight_buck (
+. . . . . . . . . . . . . . . . . . . . . . .>     id                    INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     sunrise_sunset        STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     civil_twilight        STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     nautical_twilight     STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     astronomical_twilight STRING
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> CLUSTERED BY (sunrise_sunset) INTO 4 BUCKETS
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION 'project/hive/warehouse/twilight_buck';
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE road_features_buck (
+. . . . . . . . . . . . . . . . . . . . . . .>     id                INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     amenity           BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     bump              BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     crossing          BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     give_way          BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     junction          BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     no_exit           BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     railway           BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     roundabout        BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     station           BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     stop              BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     traffic_calming   BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     traffic_signal    BOOLEAN,
+. . . . . . . . . . . . . . . . . . . . . . .>     turning_loop      BOOLEAN
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> CLUSTERED BY (traffic_signal) INTO 4 BUCKETS
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION 'project/hive/warehouse/road_features_buck';
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE accidents_part (
+. . . . . . . . . . . . . . . . . . . . . . .>     id                STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     source            STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     start_time        TIMESTAMP,
+. . . . . . . . . . . . . . . . . . . . . . .>     end_time          TIMESTAMP,
+. . . . . . . . . . . . . . . . . . . . . . .>     description       STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     distance_mi       DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     location_id       INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     weather_id        INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     twilight_id       INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     road_feat_id      INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     duration_minutes  DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     start_month       INT
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> PARTITIONED BY (severity INT, year INT)
+. . . . . . . . . . . . . . . . . . . . . . .> CLUSTERED BY (start_month) INTO 12 BUCKETS
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION 'project/hive/warehouse/accidents_part';
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- ============================================================
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- Load optimized tables
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- ============================================================
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> INSERT OVERWRITE TABLE locations_part PARTITION (state)
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     id,
+. . . . . . . . . . . . . . . . . . . . . . .>     start_lat,
+. . . . . . . . . . . . . . . . . . . . . . .>     start_lng,
+. . . . . . . . . . . . . . . . . . . . . . .>     end_lat,
+. . . . . . . . . . . . . . . . . . . . . . .>     end_lng,
+. . . . . . . . . . . . . . . . . . . . . . .>     street,
+. . . . . . . . . . . . . . . . . . . . . . .>     county,
+. . . . . . . . . . . . . . . . . . . . . . .>     zipcode,
+. . . . . . . . . . . . . . . . . . . . . . .>     timezone,
+. . . . . . . . . . . . . . . . . . . . . . .>     city,
+. . . . . . . . . . . . . . . . . . . . . . .>     state
+. . . . . . . . . . . . . . . . . . . . . . .> FROM locations;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> INSERT OVERWRITE TABLE weather_buck
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     id,
+. . . . . . . . . . . . . . . . . . . . . . .>     airport_code,
+. . . . . . . . . . . . . . . . . . . . . . .>     CASE
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN weather_timestamp IS NOT NULL
+. . . . . . . . . . . . . . . . . . . . . . .>         THEN CAST(from_unixtime(CAST(weather_timestamp / 1000 AS BIGINT)) AS TIMESTAMP)
+. . . . . . . . . . . . . . . . . . . . . . .>         ELSE NULL
+. . . . . . . . . . . . . . . . . . . . . . .>     END AS weather_timestamp,
+. . . . . . . . . . . . . . . . . . . . . . .>     temperature_f,
+. . . . . . . . . . . . . . . . . . . . . . .>     wind_chill_f,
+. . . . . . . . . . . . . . . . . . . . . . .>     humidity_pct,
+. . . . . . . . . . . . . . . . . . . . . . .>     pressure_in,
+. . . . . . . . . . . . . . . . . . . . . . .>     visibility_mi,
+. . . . . . . . . . . . . . . . . . . . . . .>     wind_direction,
+. . . . . . . . . . . . . . . . . . . . . . .>     wind_speed_mph,
+. . . . . . . . . . . . . . . . . . . . . . .>     precipitation_in,
+. . . . . . . . . . . . . . . . . . . . . . .>     weather_condition
+. . . . . . . . . . . . . . . . . . . . . . .> FROM weather;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> INSERT OVERWRITE TABLE twilight_buck
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     id,
+. . . . . . . . . . . . . . . . . . . . . . .>     sunrise_sunset,
+. . . . . . . . . . . . . . . . . . . . . . .>     civil_twilight,
+. . . . . . . . . . . . . . . . . . . . . . .>     nautical_twilight,
+. . . . . . . . . . . . . . . . . . . . . . .>     astronomical_twilight
+. . . . . . . . . . . . . . . . . . . . . . .> FROM twilight;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> INSERT OVERWRITE TABLE road_features_buck
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     id,
+. . . . . . . . . . . . . . . . . . . . . . .>     amenity,
+. . . . . . . . . . . . . . . . . . . . . . .>     bump,
+. . . . . . . . . . . . . . . . . . . . . . .>     crossing,
+. . . . . . . . . . . . . . . . . . . . . . .>     give_way,
+. . . . . . . . . . . . . . . . . . . . . . .>     junction,
+. . . . . . . . . . . . . . . . . . . . . . .>     no_exit,
+. . . . . . . . . . . . . . . . . . . . . . .>     railway,
+. . . . . . . . . . . . . . . . . . . . . . .>     roundabout,
+. . . . . . . . . . . . . . . . . . . . . . .>     station,
+. . . . . . . . . . . . . . . . . . . . . . .>     stop,
+. . . . . . . . . . . . . . . . . . . . . . .>     traffic_calming,
+. . . . . . . . . . . . . . . . . . . . . . .>     traffic_signal,
+. . . . . . . . . . . . . . . . . . . . . . .>     turning_loop
+. . . . . . . . . . . . . . . . . . . . . . .> FROM road_features;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> INSERT OVERWRITE TABLE accidents_part PARTITION (severity, year)
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     id,
+. . . . . . . . . . . . . . . . . . . . . . .>     source,
+. . . . . . . . . . . . . . . . . . . . . . .>     CASE
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN start_time IS NOT NULL
+. . . . . . . . . . . . . . . . . . . . . . .>         THEN CAST(from_unixtime(CAST(start_time / 1000 AS BIGINT)) AS TIMESTAMP)
+. . . . . . . . . . . . . . . . . . . . . . .>         ELSE NULL
+. . . . . . . . . . . . . . . . . . . . . . .>     END AS start_time,
+. . . . . . . . . . . . . . . . . . . . . . .>     CASE
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN end_time IS NOT NULL
+. . . . . . . . . . . . . . . . . . . . . . .>         THEN CAST(from_unixtime(CAST(end_time / 1000 AS BIGINT)) AS TIMESTAMP)
+. . . . . . . . . . . . . . . . . . . . . . .>         ELSE NULL
+. . . . . . . . . . . . . . . . . . . . . . .>     END AS end_time,
+. . . . . . . . . . . . . . . . . . . . . . .>     description,
+. . . . . . . . . . . . . . . . . . . . . . .>     distance_mi,
+. . . . . . . . . . . . . . . . . . . . . . .>     location_id,
+. . . . . . . . . . . . . . . . . . . . . . .>     weather_id,
+. . . . . . . . . . . . . . . . . . . . . . .>     twilight_id,
+. . . . . . . . . . . . . . . . . . . . . . .>     road_feat_id,
+. . . . . . . . . . . . . . . . . . . . . . .>     CASE
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN start_time IS NOT NULL AND end_time IS NOT NULL
+. . . . . . . . . . . . . . . . . . . . . . .>         THEN (end_time - start_time) / 60000.0
+. . . . . . . . . . . . . . . . . . . . . . .>         ELSE NULL
+. . . . . . . . . . . . . . . . . . . . . . .>     END AS duration_minutes,
+. . . . . . . . . . . . . . . . . . . . . . .>     month(CAST(from_unixtime(CAST(start_time / 1000 AS BIGINT)) AS TIMESTAMP)) AS start_mo nth,
+. . . . . . . . . . . . . . . . . . . . . . .>     severity,
+. . . . . . . . . . . . . . . . . . . . . . .>     year(CAST(from_unixtime(CAST(start_time / 1000 AS BIGINT)) AS TIMESTAMP)) AS year
+. . . . . . . . . . . . . . . . . . . . . . .> FROM accidents;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- ============================================================
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- Delete the unpartitioned/unbucketed base Hive tables
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- EDA must use only optimized tables.
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- ============================================================
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS accidents;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS locations;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS weather;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS twilight;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS road_features;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- ============================================================
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- Final checks
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> -- ============================================================
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SHOW TABLES;
++---------------------+
+|      tab_name       |
++---------------------+
+| accidents_part      |
+| locations_part      |
+| road_features_buck  |
+| twilight_buck       |
+| weather_buck        |
++---------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DESCRIBE FORMATTED accidents_part;
++-------------------------------+----------------------------------------------------+-----------------------------+
+|           col_name            |                     data_type                      |           comment           |
++-------------------------------+----------------------------------------------------+-----------------------------+
+| # col_name                    | data_type                                          | comment                     |
+| id                            | string                                             |                             |
+| source                        | string                                             |                             |
+| start_time                    | timestamp                                          |                             |
+| end_time                      | timestamp                                          |                             |
+| description                   | string                                             |                             |
+| distance_mi                   | double                                             |                             |
+| location_id                   | int                                                |                             |
+| weather_id                    | int                                                |                             |
+| twilight_id                   | int                                                |                             |
+| road_feat_id                  | int                                                |                             |
+| duration_minutes              | double                                             |                             |
+| start_month                   | int                                                |                             |
+|                               | NULL                                               | NULL                        |
+| # Partition Information       | NULL                                               | NULL                        |
+| # col_name                    | data_type                                          | comment                     |
+| severity                      | int                                                |                             |
+| year                          | int                                                |                             |
+|                               | NULL                                               | NULL                        |
+| # Detailed Table Information  | NULL                                               | NULL                        |
+| Database:                     | team3_projectdb                                    | NULL                        |
+| OwnerType:                    | USER                                               | NULL                        |
+| Owner:                        | team3                                              | NULL                        |
+| CreateTime:                   | Sat Apr 11 00:04:01 MSK 2026                       | NULL                        |
+| LastAccessTime:               | UNKNOWN                                            | NULL                        |
+| Retention:                    | 0                                                  | NULL                        |
+| Location:                     | hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part | NULL                        |
+| Table Type:                   | EXTERNAL_TABLE                                     | NULL                        |
+| Table Parameters:             | NULL                                               | NULL                        |
+|                               | COLUMN_STATS_ACCURATE                              | {\"BASIC_STATS\":\"true\"}  |
+|                               | EXTERNAL                                           | TRUE                        |
+|                               | bucketing_version                                  | 2                           |
+|                               | numFiles                                           | 254                         |
+|                               | numPartitions                                      | 30                          |
+|                               | numRows                                            | 7728394                     |
+|                               | rawDataSize                                        | 92740728                    |
+|                               | totalSize                                          | 490965801                   |
+|                               | transient_lastDdlTime                              | 1775855041                  |
+|                               | NULL                                               | NULL                        |
+| # Storage Information         | NULL                                               | NULL                        |
+| SerDe Library:                | org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe | NULL                        |
+| InputFormat:                  | org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat | NULL                        |
+| OutputFormat:                 | org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat | NULL                        |
+| Compressed:                   | No                                                 | NULL                        |
+| Num Buckets:                  | 12                                                 | NULL                        |
+| Bucket Columns:               | [start_month]                                      | NULL                        |
+| Sort Columns:                 | []                                                 | NULL                        |
+| Storage Desc Params:          | NULL                                               | NULL                        |
+|                               | serialization.format                               | 1                           |
++-------------------------------+----------------------------------------------------+-----------------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DESCRIBE FORMATTED locations_part;
++-------------------------------+----------------------------------------------------+-----------------------------+
+|           col_name            |                     data_type                      |           comment           |
++-------------------------------+----------------------------------------------------+-----------------------------+
+| # col_name                    | data_type                                          | comment                     |
+| id                            | int                                                |                             |
+| start_lat                     | double                                             |                             |
+| start_lng                     | double                                             |                             |
+| end_lat                       | double                                             |                             |
+| end_lng                       | double                                             |                             |
+| street                        | string                                             |                             |
+| county                        | string                                             |                             |
+| zipcode                       | string                                             |                             |
+| timezone                      | string                                             |                             |
+| city                          | string                                             |                             |
+|                               | NULL                                               | NULL                        |
+| # Partition Information       | NULL                                               | NULL                        |
+| # col_name                    | data_type                                          | comment                     |
+| state                         | string                                             |                             |
+|                               | NULL                                               | NULL                        |
+| # Detailed Table Information  | NULL                                               | NULL                        |
+| Database:                     | team3_projectdb                                    | NULL                        |
+| OwnerType:                    | USER                                               | NULL                        |
+| Owner:                        | team3                                              | NULL                        |
+| CreateTime:                   | Sat Apr 11 00:04:00 MSK 2026                       | NULL                        |
+| LastAccessTime:               | UNKNOWN                                            | NULL                        |
+| Retention:                    | 0                                                  | NULL                        |
+| Location:                     | hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/locations_part | NULL                        |
+| Table Type:                   | EXTERNAL_TABLE                                     | NULL                        |
+| Table Parameters:             | NULL                                               | NULL                        |
+|                               | COLUMN_STATS_ACCURATE                              | {\"BASIC_STATS\":\"true\"}  |
+|                               | EXTERNAL                                           | TRUE                        |
+|                               | bucketing_version                                  | 2                           |
+|                               | numFiles                                           | 1532                        |
+|                               | numPartitions                                      | 49                          |
+|                               | numRows                                            | 3803966                     |
+|                               | rawDataSize                                        | 38039660                    |
+|                               | totalSize                                          | 135251460                   |
+|                               | transient_lastDdlTime                              | 1775855040                  |
+|                               | NULL                                               | NULL                        |
+| # Storage Information         | NULL                                               | NULL                        |
+| SerDe Library:                | org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe | NULL                        |
+| InputFormat:                  | org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat | NULL                        |
+| OutputFormat:                 | org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat | NULL                        |
+| Compressed:                   | No                                                 | NULL                        |
+| Num Buckets:                  | 32                                                 | NULL                        |
+| Bucket Columns:               | [city]                                             | NULL                        |
+| Sort Columns:                 | []                                                 | NULL                        |
+| Storage Desc Params:          | NULL                                               | NULL                        |
+|                               | serialization.format                               | 1                           |
++-------------------------------+----------------------------------------------------+-----------------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DESCRIBE FORMATTED weather_buck;
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+|           col_name            |                     data_type                      |                      comment                       |
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+| # col_name                    | data_type                                          | comment                                            |
+| id                            | int                                                |                                                    |
+| airport_code                  | string                                             |                                                    |
+| weather_timestamp             | timestamp                                          |                                                    |
+| temperature_f                 | double                                             |                                                    |
+| wind_chill_f                  | double                                             |                                                    |
+| humidity_pct                  | double                                             |                                                    |
+| pressure_in                   | double                                             |                                                    |
+| visibility_mi                 | double                                             |                                                    |
+| wind_direction                | string                                             |                                                    |
+| wind_speed_mph                | double                                             |                                                    |
+| precipitation_in              | double                                             |                                                    |
+| weather_condition             | string                                             |                                                    |
+|                               | NULL                                               | NULL                                               |
+| # Detailed Table Information  | NULL                                               | NULL                                               |
+| Database:                     | team3_projectdb                                    | NULL                                               |
+| OwnerType:                    | USER                                               | NULL                                               |
+| Owner:                        | team3                                              | NULL                                               |
+| CreateTime:                   | Sat Apr 11 00:04:00 MSK 2026                       | NULL                                               |
+| LastAccessTime:               | UNKNOWN                                            | NULL                                               |
+| Retention:                    | 0                                                  | NULL                                               |
+| Location:                     | hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/weather_buck | NULL                                               |
+| Table Type:                   | EXTERNAL_TABLE                                     | NULL                                               |
+| Table Parameters:             | NULL                                               | NULL                                               |
+|                               | COLUMN_STATS_ACCURATE                              | {\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"airport_code\":\"true\",\"humidity_pct\":\"true\",\"id\":\"true\",\"precipitation_in\":\"true\",\"pressure_in\":\"true\",\"temperature_f\":\"true\",\"visibility_mi\":\"true\",\"weather_condition\":\"true\",\"weather_timestamp\":\"true\",\"wind_chill_f\":\"true\",\"wind_direction\":\"true\",\"wind_speed_mph\":\"true\"}} |
+|                               | EXTERNAL                                           | TRUE                                               |
+|                               | bucketing_version                                  | 2                                                  |
+|                               | numFiles                                           | 32                                                 |
+|                               | numRows                                            | 4369540                                            |
+|                               | rawDataSize                                        | 52434480                                           |
+|                               | totalSize                                          | 80951231                                           |
+|                               | transient_lastDdlTime                              | 1775855089                                         |
+|                               | NULL                                               | NULL                                               |
+| # Storage Information         | NULL                                               | NULL                                               |
+| SerDe Library:                | org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe | NULL                                               |
+| InputFormat:                  | org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat | NULL                                               |
+| OutputFormat:                 | org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat | NULL                                               |
+| Compressed:                   | No                                                 | NULL                                               |
+| Num Buckets:                  | 32                                                 | NULL                                               |
+| Bucket Columns:               | [weather_condition]                                | NULL                                               |
+| Sort Columns:                 | []                                                 | NULL                                               |
+| Storage Desc Params:          | NULL                                               | NULL                                               |
+|                               | serialization.format                               | 1                                                  |
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DESCRIBE FORMATTED road_features_buck;
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+|           col_name            |                     data_type                      |                      comment                       |
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+| # col_name                    | data_type                                          | comment                                            |
+| id                            | int                                                |                                                    |
+| amenity                       | boolean                                            |                                                    |
+| bump                          | boolean                                            |                                                    |
+| crossing                      | boolean                                            |                                                    |
+| give_way                      | boolean                                            |                                                    |
+| junction                      | boolean                                            |                                                    |
+| no_exit                       | boolean                                            |                                                    |
+| railway                       | boolean                                            |                                                    |
+| roundabout                    | boolean                                            |                                                    |
+| station                       | boolean                                            |                                                    |
+| stop                          | boolean                                            |                                                    |
+| traffic_calming               | boolean                                            |                                                    |
+| traffic_signal                | boolean                                            |                                                    |
+| turning_loop                  | boolean                                            |                                                    |
+|                               | NULL                                               | NULL                                               |
+| # Detailed Table Information  | NULL                                               | NULL                                               |
+| Database:                     | team3_projectdb                                    | NULL                                               |
+| OwnerType:                    | USER                                               | NULL                                               |
+| Owner:                        | team3                                              | NULL                                               |
+| CreateTime:                   | Sat Apr 11 00:04:01 MSK 2026                       | NULL                                               |
+| LastAccessTime:               | UNKNOWN                                            | NULL                                               |
+| Retention:                    | 0                                                  | NULL                                               |
+| Location:                     | hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/road_features_buck | NULL                                               |
+| Table Type:                   | EXTERNAL_TABLE                                     | NULL                                               |
+| Table Parameters:             | NULL                                               | NULL                                               |
+|                               | COLUMN_STATS_ACCURATE                              | {\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"amenity\":\"true\",\"bump\":\"true\",\"crossing\":\"true\",\"give_way\":\"true\",\"id\":\"true\",\"junction\":\"true\",\"no_exit\":\"true\",\"railway\":\"true\",\"roundabout\":\"true\",\"station\":\"true\",\"stop\":\"true\",\"traffic_calming\":\"true\",\"traffic_signal\":\"true\",\"turning_loop\":\"true\"}} |
+|                               | EXTERNAL                                           | TRUE                                               |
+|                               | bucketing_version                                  | 2                                                  |
+|                               | numFiles                                           | 2                                                  |
+|                               | numRows                                            | 344                                                |
+|                               | rawDataSize                                        | 4816                                               |
+|                               | totalSize                                          | 6586                                               |
+|                               | transient_lastDdlTime                              | 1775855092                                         |
+|                               | NULL                                               | NULL                                               |
+| # Storage Information         | NULL                                               | NULL                                               |
+| SerDe Library:                | org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe | NULL                                               |
+| InputFormat:                  | org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat | NULL                                               |
+| OutputFormat:                 | org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat | NULL                                               |
+| Compressed:                   | No                                                 | NULL                                               |
+| Num Buckets:                  | 4                                                  | NULL                                               |
+| Bucket Columns:               | [traffic_signal]                                   | NULL                                               |
+| Sort Columns:                 | []                                                 | NULL                                               |
+| Storage Desc Params:          | NULL                                               | NULL                                               |
+|                               | serialization.format                               | 1                                                  |
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT COUNT(*) AS accidents_part_count FROM accidents_part;
++-----------------------+
+| accidents_part_count  |
++-----------------------+
+| 7728394               |
++-----------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT COUNT(*) AS locations_part_count FROM locations_part;
++-----------------------+
+| locations_part_count  |
++-----------------------+
+| 3803966               |
++-----------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT COUNT(*) AS weather_buck_count FROM weather_buck;
++---------------------+
+| weather_buck_count  |
++---------------------+
+| 4369540             |
++---------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT COUNT(*) AS road_features_buck_count FROM road_features_buck;
++---------------------------+
+| road_features_buck_count  |
++---------------------------+
+| 344                       |
++---------------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     severity,
+. . . . . . . . . . . . . . . . . . . . . . .>     COUNT(*) AS accident_count
+. . . . . . . . . . . . . . . . . . . . . . .> FROM accidents_part
+. . . . . . . . . . . . . . . . . . . . . . .> GROUP BY severity
+. . . . . . . . . . . . . . . . . . . . . . .> ORDER BY severity;
++-----------+-----------------+
+| severity  | accident_count  |
++-----------+-----------------+
+| 1         | 67366           |
+| 2         | 6156981         |
+| 3         | 1299337         |
+| 4         | 204710          |
++-----------+-----------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     year,
+. . . . . . . . . . . . . . . . . . . . . . .>     ROUND(AVG(duration_minutes), 2) AS avg_duration_minutes
+. . . . . . . . . . . . . . . . . . . . . . .> FROM accidents_part
+. . . . . . . . . . . . . . . . . . . . . . .> GROUP BY year
+. . . . . . . . . . . . . . . . . . . . . . .> ORDER BY year;
++-------+-----------------------+
+| year  | avg_duration_minutes  |
++-------+-----------------------+
+| 2016  | 220.38                |
+| 2017  | 160.58                |
+| 2018  | 122.13                |
+| 2019  | 92.95                 |
+| 2020  | 633.26                |
+| 2021  | 1056.23               |
+| 2022  | 340.51                |
+| 2023  | 132.29                |
++-------+-----------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     state,
+. . . . . . . . . . . . . . . . . . . . . . .>     COUNT(*) AS accident_count
+. . . . . . . . . . . . . . . . . . . . . . .> FROM locations_part
+. . . . . . . . . . . . . . . . . . . . . . .> GROUP BY state
+. . . . . . . . . . . . . . . . . . . . . . .> ORDER BY accident_count DESC
+. . . . . . . . . . . . . . . . . . . . . . .> LIMIT 10;
++--------+-----------------+
+| state  | accident_count  |
++--------+-----------------+
+| CA     | 818430          |
+| FL     | 392081          |
+| TX     | 285385          |
+| SC     | 191929          |
+| VA     | 178245          |
+| NY     | 169854          |
+| PA     | 168472          |
+| NC     | 139382          |
+| MN     | 98188           |
+| OR     | 93183           |
++--------+-----------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     weather_condition,
+. . . . . . . . . . . . . . . . . . . . . . .>     COUNT(*) AS weather_rows
+. . . . . . . . . . . . . . . . . . . . . . .> FROM weather_buck
+. . . . . . . . . . . . . . . . . . . . . . .> GROUP BY weather_condition
+. . . . . . . . . . . . . . . . . . . . . . .> ORDER BY weather_rows DESC
+. . . . . . . . . . . . . . . . . . . . . . .> LIMIT 10;
++--------------------+---------------+
+| weather_condition  | weather_rows  |
++--------------------+---------------+
+| Fair               | 1364200       |
+| Mostly Cloudy      | 558168        |
+| Clear              | 550019        |
+| Cloudy             | 466734        |
+| Partly Cloudy      | 380225        |
+| Overcast           | 263839        |
+| Light Rain         | 207350        |
+| Scattered Clouds   | 133075        |
+| Light Snow         | 71688         |
+| Fog                | 62975         |
++--------------------+---------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 

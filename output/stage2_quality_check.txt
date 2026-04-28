@@ -1,0 +1,33 @@
+Stage 2 Quality Check
+Project root: /home/team3/project/bigdata-accidents-project
+
+1. Checking required Stage 2 files exist
+[OK] stage2.sh
+[OK] scripts/build_hive_tables.sh
+[OK] scripts/run_stage2_eda.sh
+[OK] scripts/check_stage2_quality.sh
+[OK] sql/db.hql
+[OK] sql/q1.hql
+[OK] sql/q2.hql
+[OK] sql/q3.hql
+[OK] sql/q4.hql
+[OK] sql/q5.hql
+
+2. Bash syntax check with bash -n
+[OK] bash -n stage2.sh
+[OK] bash -n scripts/build_hive_tables.sh
+[OK] bash -n scripts/run_stage2_eda.sh
+[OK] bash -n scripts/check_stage2_quality.sh
+
+3. Pylint availability check
+pylint 2.13.9
+astroid 2.11.7
+Python 3.6.8 (default, Nov 14 2023, 16:29:52) 
+[GCC 4.8.5 20150623 (Red Hat 4.8.5-44)]
+
+4. Stage 2 Python lint note
+Stage 2 automation in this project uses Bash and HiveQL.
+There are no dedicated Stage 2 Python scripts to lint.
+Pylint command availability was verified above as required.
+
+Stage 2 quality check completed successfully.

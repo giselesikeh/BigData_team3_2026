@@ -1,0 +1,2358 @@
+log4j:WARN No appenders could be found for logger (org.apache.hadoop.util.Shell).
+log4j:WARN Please initialize the log4j system properly.
+log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
+Connecting to jdbc:hive2://hadoop-03.uni.innopolis.ru:10001
+Connected to: Apache Hive (version 3.1.3)
+Driver: Hive JDBC (version 2.3.9)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+INFO  : Compiling command(queryId=hive_20260411000815_73b1c6e2-9e84-4305-9805-5947b8d79b38): USE team3_projectdb
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260411000815_73b1c6e2-9e84-4305-9805-5947b8d79b38 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+
+
+INFO  : Completed compiling command(queryId=hive_20260411000815_73b1c6e2-9e84-4305-9805-5947b8d79b38); Time taken: 0.058 seconds
+INFO  : Executing command(queryId=hive_20260411000815_73b1c6e2-9e84-4305-9805-5947b8d79b38): USE team3_projectdb
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260411000815_73b1c6e2-9e84-4305-9805-5947b8d79b38); Time taken: 0.009 seconds
+INFO  : OK
+No rows affected (0.128 seconds)
+INFO  : Compiling command(queryId=hive_20260411000815_f6aa1a61-5db7-4d87-a494-c33600910ab6): DROP TABLE IF EXISTS q5_results
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260411000815_f6aa1a61-5db7-4d87-a494-c33600910ab6 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Drop Table Operator:
+        Drop Table
+          table: q5_results
+
+
+INFO  : Completed compiling command(queryId=hive_20260411000815_f6aa1a61-5db7-4d87-a494-c33600910ab6); Time taken: 0.029 seconds
+INFO  : Executing command(queryId=hive_20260411000815_f6aa1a61-5db7-4d87-a494-c33600910ab6): DROP TABLE IF EXISTS q5_results
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260411000815_f6aa1a61-5db7-4d87-a494-c33600910ab6); Time taken: 0.004 seconds
+INFO  : OK
+No rows affected (0.053 seconds)
+INFO  : Compiling command(queryId=hive_20260411000815_3a290b1e-924a-4218-a67f-c02e9bcbb6b3): CREATE TABLE q5_results
+STORED AS PARQUET
+AS
+SELECT
+CASE
+WHEN rf.traffic_signal = true THEN 'Signal Present'
+WHEN rf.traffic_signal = false THEN 'No Signal'
+ELSE 'Unknown'
+END AS traffic_signal_status,
+CASE
+WHEN rf.junction = true THEN 'Junction'
+WHEN rf.junction = false THEN 'Not Junction'
+ELSE 'Unknown'
+END AS junction_status,
+COUNT(*) AS accident_count,
+ROUND(AVG(CAST(ap.severity AS DOUBLE)), 2) AS avg_severity,
+ROUND(AVG(ap.duration_minutes), 2) AS avg_duration_minutes
+FROM accidents_part ap
+JOIN road_features_buck rf
+ON ap.road_feat_id = rf.id
+GROUP BY
+CASE
+WHEN rf.traffic_signal = true THEN 'Signal Present'
+WHEN rf.traffic_signal = false THEN 'No Signal'
+ELSE 'Unknown'
+END,
+CASE
+WHEN rf.junction = true THEN 'Junction'
+WHEN rf.junction = false THEN 'Not Junction'
+ELSE 'Unknown'
+END
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:traffic_signal_status, type:string, comment:null), FieldSchema(name:junction_status, type:string, comment:null), FieldSchema(name:accident_count, type:bigint, comment:null), FieldSchema(name:avg_severity, type:double, comment:null), FieldSchema(name:avg_duration_minutes, type:double, comment:null)], properties:null)
+INFO  : EXPLAIN output for queryid hive_20260411000815_3a290b1e-924a-4218-a67f-c02e9bcbb6b3 : STAGE DEPENDENCIES:
+  Stage-1 is a root stage [MAPRED]
+  Stage-2 depends on stages: Stage-1 [DEPENDENCY_COLLECTION]
+  Stage-4 depends on stages: Stage-2, Stage-0 [DDL]
+  Stage-3 depends on stages: Stage-4 [STATS]
+  Stage-0 depends on stages: Stage-1 [MOVE]
+
+STAGE PLANS:
+  Stage: Stage-1
+    Tez
+      DagId: hive_20260411000815_3a290b1e-924a-4218-a67f-c02e9bcbb6b3:20817
+      Edges:
+        Map 1 <- Map 3 (BROADCAST_EDGE)
+        Reducer 2 <- Map 1 (SIMPLE_EDGE)
+      DagName: hive_20260411000815_3a290b1e-924a-4218-a67f-c02e9bcbb6b3:20817
+      Vertices:
+        Map 1 
+            Map Operator Tree:
+                TableScan
+                  alias: ap
+                  Statistics: Num rows: 7728394 Data size: 92740728 Basic stats: COMPLETE Column stats: NONE
+                  GatherStats: false
+                  Filter Operator
+                    isSamplingPred: false
+                    predicate: road_feat_id is not null (type: boolean)
+                    Statistics: Num rows: 7728394 Data size: 92740728 Basic stats: COMPLETE Column stats: NONE
+                    Select Operator
+                      expressions: road_feat_id (type: int), duration_minutes (type: double), severity (type: int)
+                      outputColumnNames: _col0, _col1, _col2
+                      Statistics: Num rows: 7728394 Data size: 92740728 Basic stats: COMPLETE Column stats: NONE
+                      Map Join Operator
+                        condition map:
+                             Inner Join 0 to 1
+                        Estimated key counts: Map 3 => 344
+                        keys:
+                          0 _col0 (type: int)
+                          1 _col0 (type: int)
+                        outputColumnNames: _col1, _col2, _col4, _col5
+                        input vertices:
+                          1 Map 3
+                        Position of Big Table: 0
+                        Statistics: Num rows: 8501233 Data size: 102014803 Basic stats: COMPLETE Column stats: NONE
+                        HybridGraceHashJoin: true
+                        Select Operator
+                          expressions: CASE WHEN (_col5) THEN ('Signal Present') WHEN ((not _col5)) THEN ('No Signal') ELSE ('Unknown') END (type: string), CASE WHEN (_col4) THEN ('Junction') WHEN ((not _col4)) THEN ('Not Junction') ELSE ('Unknown') END (type: string), UDFToDouble(_col2) (type: double), _col1 (type: double)
+                          outputColumnNames: _col0, _col1, _col2, _col3
+                          Statistics: Num rows: 8501233 Data size: 102014803 Basic stats: COMPLETE Column stats: NONE
+                          Group By Operator
+                            aggregations: count(), sum(_col2), count(_col2), sum(_col3), count(_col3)
+                            keys: _col0 (type: string), _col1 (type: string)
+                            mode: hash
+                            outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5, _col6
+                            Statistics: Num rows: 8501233 Data size: 102014803 Basic stats: COMPLETE Column stats: NONE
+                            Reduce Output Operator
+                              key expressions: _col0 (type: string), _col1 (type: string)
+                              null sort order: aa
+                              sort order: ++
+                              Map-reduce partition columns: _col0 (type: string), _col1 (type: string)
+                              Statistics: Num rows: 8501233 Data size: 102014803 Basic stats: COMPLETE Column stats: NONE
+                              tag: -1
+                              value expressions: _col2 (type: bigint), _col3 (type: double), _col4 (type: bigint), _col5 (type: double), _col6 (type: bigint)
+                              auto parallelism: true
+            Execution mode: vectorized
+            Path -> Alias:
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2016 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2017 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2018 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2019 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2020 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2021 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2022 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2016 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2017 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2018 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2019 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2020 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2021 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2022 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2023 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2016 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2017 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2018 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2019 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2020 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2021 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2022 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2016 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2017 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2018 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2019 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2020 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2021 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2022 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2023 [ap]
+            Path -> Partition:
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2016 
+                Partition
+                  base file name: year=2016
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 1
+                    year 2016
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2016
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 225
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 2700
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 41022
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2017 
+                Partition
+                  base file name: year=2017
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 1
+                    year 2017
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2017
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 282
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 3384
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 47310
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2018 
+                Partition
+                  base file name: year=2018
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 1
+                    year 2018
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2018
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 259
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 3108
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 44881
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2019 
+                Partition
+                  base file name: year=2019
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 1
+                    year 2019
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2019
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 203
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 2436
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 41597
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2020 
+                Partition
+                  base file name: year=2020
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 1
+                    year 2020
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2020
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 28371
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 340452
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 1214630
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2021 
+                Partition
+                  base file name: year=2021
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 1
+                    year 2021
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2021
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 151
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 1812
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 36804
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2022 
+                Partition
+                  base file name: year=2022
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 1
+                    year 2022
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2022
+                    name team3_projectdb.accidents_part
+                    numFiles 7
+                    numRows 37875
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 454500
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 2225296
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2016 
+                Partition
+                  base file name: year=2016
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 2
+                    year 2016
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2016
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 270026
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 3240312
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 13988009
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2017 
+                Partition
+                  base file name: year=2017
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 2
+                    year 2017
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2017
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 462474
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 5549688
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 25124858
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2018 
+                Partition
+                  base file name: year=2018
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 2
+                    year 2018
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2018
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 574668
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 6896016
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 31975440
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2019 
+                Partition
+                  base file name: year=2019
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 2
+                    year 2019
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2019
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 688144
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 8257728
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 36836554
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2020 
+                Partition
+                  base file name: year=2020
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 2
+                    year 2020
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2020
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 934123
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 11209476
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 54324430
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2021 
+                Partition
+                  base file name: year=2021
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 2
+                    year 2021
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2021
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 1384628
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 16615536
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 98155928
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2022 
+                Partition
+                  base file name: year=2022
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 2
+                    year 2022
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2022
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 1603346
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 19240152
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 118058499
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2023 
+                Partition
+                  base file name: year=2023
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 2
+                    year 2023
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2023
+                    name team3_projectdb.accidents_part
+                    numFiles 3
+                    numRows 239572
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 2874864
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 17363330
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2016 
+                Partition
+                  base file name: year=2016
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 3
+                    year 2016
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2016
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 126215
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 1514580
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 6918717
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 3            container        INITED      1          0        0        1       0       0  
+Map 1            container        INITED     11          0        0       11       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 1.07 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 3            container        INITED      1          0        0        1       0       0  
+Map 1            container        INITED     11          0        0       11       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 1.58 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 3            container       RUNNING      1          0        1        0       0       0  
+Map 1            container        INITED     11          0        0       11       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 2.08 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 3            container       RUNNING      1          0        1        0       0       0  
+Map 1            container        INITED     11          0        0       11       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 2.58 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 3            container       RUNNING      1          0        1        0       0       0  
+Map 1            container       RUNNING     11          0        3        8       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 3.09 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 3            container       RUNNING      1          0        1        0       0       0  
+Map 1            container       RUNNING     11          0       11        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 3.59 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 3 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Map 1            container       RUNNING     11          0       11        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 01/03  [==>>------------------------] 7%    ELAPSED TIME: 4.09 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 3 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Map 1            container       RUNNING     11          0       11        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 01/03  [==>>------------------------] 7%    ELAPSED TIME: 4.60 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 3 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Map 1            container       RUNNING     11          0       11        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 01/03  [==>>------------------------] 7%    ELAPSED TIME: 5.10 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 3 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Map 1            container       RUNNING     11          0       11        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 01/03  [==>>------------------------] 7%    ELAPSED TIME: 5.60 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 3 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Map 1            container       RUNNING     11          0       11        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 01/03  [==>>------------------------] 7%    ELAPSED TIME: 6.10 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 3 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Map 1 ...        container       RUNNING     11          4        7        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 01/03  [==========>>----------------] 38%   ELAPSED TIME: 7.11 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 3 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Map 1 .........  container       RUNNING     11         10        1        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 01/03  [======================>>----] 84%   ELAPSED TIME: 8.11 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 3 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Map 1 .......... container     SUCCEEDED     11         11        0        0       0       0  
+Reducer 2 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 03/03  [==========================>>] 100%  ELAPSED TIME: 8.26 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2017 
+                Partition
+                  base file name: year=2017
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 3
+                    year 2017
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2017
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 231169
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 2774028
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 13491809
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2018 
+                Partition
+                  base file name: year=2018
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 3
+                    year 2018
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2018
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 292706
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 3512472
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 17631059
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2019 
+                Partition
+                  base file name: year=2019
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 3
+                    year 2019
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2019
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 237853
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 2854236
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 14917289
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2020 
+                Partition
+                  base file name: year=2020
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 3
+                    year 2020
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2020
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 185352
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 2224224
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 11242501
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2021 
+                Partition
+                  base file name: year=2021
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 3
+                    year 2021
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2021
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 148085
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 1777020
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 9445966
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2022 
+                Partition
+                  base file name: year=2022
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 3
+                    year 2022
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2022
+                    name team3_projectdb.accidents_part
+                    numFiles 7
+                    numRows 77957
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 935484
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 5049800
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2016 
+                Partition
+                  base file name: year=2016
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 4
+                    year 2016
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2016
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 14355
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 172260
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 807165
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2017 
+                Partition
+                  base file name: year=2017
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 4
+                    year 2017
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2017
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 24168
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 290016
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 1327248
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2018 
+                Partition
+                  base file name: year=2018
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 4
+                    year 2018
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2018
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 25793
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 309516
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 1421902
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2019 
+                Partition
+                  base file name: year=2019
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 4
+                    year 2019
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2019
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 28103
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 337236
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 1693767
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2020 
+                Partition
+                  base file name: year=2020
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 4
+                    year 2020
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2020
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 31067
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 372804
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 1873015
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2021 
+                Partition
+                  base file name: year=2021
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 4
+                    year 2021
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2021
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 30889
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 370668
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 2265126
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2022 
+                Partition
+                  base file name: year=2022
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 4
+                    year 2022
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2022
+                    name team3_projectdb.accidents_part
+                    numFiles 9
+                    numRows 43274
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 519288
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 2910096
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2023 
+                Partition
+                  base file name: year=2023
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  partition values:
+                    severity 4
+                    year 2023
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"description":"true","distance_mi":"true","duration_minutes":"true","end_time":"true","id":"true","location_id":"true","road_feat_id":"true","source":"true","start_month":"true","start_time":"true","twilight_id":"true","weather_id":"true"}}
+                    bucket_count 12
+                    bucket_field_name start_month
+                    column.name.delimiter ,
+                    columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                    columns.comments 
+                    columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2023
+                    name team3_projectdb.accidents_part
+                    numFiles 3
+                    numRows 7061
+                    partition_columns severity/year
+                    partition_columns.types int:int
+                    rawDataSize 84732
+                    serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 491753
+                    transient_lastDdlTime 1775855130
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      EXTERNAL TRUE
+                      bucket_count 12
+                      bucket_field_name start_month
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,source,start_time,end_time,description,distance_mi,location_id,weather_id,twilight_id,road_feat_id,duration_minutes,start_month
+                      columns.comments 
+                      columns.types string:string:timestamp:timestamp:string:double:int:int:int:int:double:int
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part
+                      name team3_projectdb.accidents_part
+                      partition_columns severity/year
+                      partition_columns.types int:int
+                      serialization.ddl struct accidents_part { string id, string source, timestamp start_time, timestamp end_time, string description, double distance_mi, i32 location_id, i32 weather_id, i32 twilight_id, i32 road_feat_id, double duration_minutes, i32 start_month}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      transient_lastDdlTime 1775855041
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.accidents_part
+                  name: team3_projectdb.accidents_part
+            Truncated Path -> Alias:
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2016 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2017 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2018 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2019 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2020 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2021 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=1/year=2022 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2016 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2017 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2018 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2019 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2020 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2021 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2022 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=2/year=2023 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2016 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2017 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2018 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2019 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2020 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2021 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=3/year=2022 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2016 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2017 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2018 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2019 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2020 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2021 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2022 [ap]
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/accidents_part/severity=4/year=2023 [ap]
+        Map 3 
+            Map Operator Tree:
+                TableScan
+                  alias: rf
+                  Statistics: Num rows: 344 Data size: 4816 Basic stats: COMPLETE Column stats: NONE
+                  GatherStats: false
+                  Filter Operator
+                    isSamplingPred: false
+                    predicate: id is not null (type: boolean)
+                    Statistics: Num rows: 344 Data size: 4816 Basic stats: COMPLETE Column stats: NONE
+                    Select Operator
+                      expressions: id (type: int), junction (type: boolean), traffic_signal (type: boolean)
+                      outputColumnNames: _col0, _col1, _col2
+                      Statistics: Num rows: 344 Data size: 4816 Basic stats: COMPLETE Column stats: NONE
+                      Reduce Output Operator
+                        key expressions: _col0 (type: int)
+                        null sort order: a
+                        sort order: +
+                        Map-reduce partition columns: _col0 (type: int)
+                        Statistics: Num rows: 344 Data size: 4816 Basic stats: COMPLETE Column stats: NONE
+                        tag: 1
+                        value expressions: _col1 (type: boolean), _col2 (type: boolean)
+                        auto parallelism: true
+            Execution mode: vectorized
+            Path -> Alias:
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/road_features_buck [rf]
+            Path -> Partition:
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/road_features_buck 
+                Partition
+                  base file name: road_features_buck
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"amenity":"true","bump":"true","crossing":"true","give_way":"true","id":"true","junction":"true","no_exit":"true","railway":"true","roundabout":"true","station":"true","stop":"true","traffic_calming":"true","traffic_signal":"true","turning_loop":"true"}}
+                    EXTERNAL TRUE
+                    bucket_count 4
+                    bucket_field_name traffic_signal
+                    bucketing_version 2
+                    column.name.delimiter ,
+                    columns id,amenity,bump,crossing,give_way,junction,no_exit,railway,roundabout,station,stop,traffic_calming,traffic_signal,turning_loop
+                    columns.comments 
+                    columns.types int:boolean:boolean:boolean:boolean:boolean:boolean:boolean:boolean:boolean:boolean:boolean:boolean:boolean
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/road_features_buck
+                    name team3_projectdb.road_features_buck
+                    numFiles 2
+                    numRows 344
+                    rawDataSize 4816
+                    serialization.ddl struct road_features_buck { i32 id, bool amenity, bool bump, bool crossing, bool give_way, bool junction, bool no_exit, bool railway, bool roundabout, bool station, bool stop, bool traffic_calming, bool traffic_signal, bool turning_loop}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 6586
+                    transient_lastDdlTime 1775855092
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      COLUMN_STATS_ACCURATE {"BASIC_STATS":"true","COLUMN_STATS":{"amenity":"true","bump":"true","crossing":"true","give_way":"true","id":"true","junction":"true","no_exit":"true","railway":"true","roundabout":"true","station":"true","stop":"true","traffic_calming":"true","traffic_signal":"true","turning_loop":"true"}}
+                      EXTERNAL TRUE
+                      bucket_count 4
+                      bucket_field_name traffic_signal
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns id,amenity,bump,crossing,give_way,junction,no_exit,railway,roundabout,station,stop,traffic_calming,traffic_signal,turning_loop
+                      columns.comments 
+                      columns.types int:boolean:boolean:boolean:boolean:boolean:boolean:boolean:boolean:boolean:boolean:boolean:boolean:boolean
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/road_features_buck
+                      name team3_projectdb.road_features_buck
+                      numFiles 2
+                      numRows 344
+                      rawDataSize 4816
+                      serialization.ddl struct road_features_buck { i32 id, bool amenity, bool bump, bool crossing, bool give_way, bool junction, bool no_exit, bool railway, bool roundabout, bool station, bool stop, bool traffic_calming, bool traffic_signal, bool turning_loop}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      totalSize 6586
+                      transient_lastDdlTime 1775855092
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.road_features_buck
+                  name: team3_projectdb.road_features_buck
+            Truncated Path -> Alias:
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/road_features_buck [rf]
+        Reducer 2 
+            Execution mode: vectorized
+            Needs Tagging: false
+            Reduce Operator Tree:
+              Group By Operator
+                aggregations: count(VALUE._col0), sum(VALUE._col1), count(VALUE._col2), sum(VALUE._col3), count(VALUE._col4)
+                keys: KEY._col0 (type: string), KEY._col1 (type: string)
+                mode: mergepartial
+                outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5, _col6
+                Statistics: Num rows: 4250616 Data size: 51007395 Basic stats: COMPLETE Column stats: NONE
+                Select Operator
+                  expressions: _col0 (type: string), _col1 (type: string), _col2 (type: bigint), round((_col3 / _col4), 2) (type: double), round((_col5 / _col6), 2) (type: double)
+                  outputColumnNames: _col0, _col1, _col2, _col3, _col4
+                  Statistics: Num rows: 4250616 Data size: 51007395 Basic stats: COMPLETE Column stats: NONE
+                  File Output Operator
+                    compressed: false
+                    GlobalTableId: 1
+                    directory: hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/.hive-staging_hive_2026-04-11_00-08-15_965_2184106074024150898-15210/-ext-10002
+                    NumFilesPerFileSink: 1
+                    Statistics: Num rows: 4250616 Data size: 51007395 Basic stats: COMPLETE Column stats: NONE
+                    Stats Publishing Key Prefix: hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/.hive-staging_hive_2026-04-11_00-08-15_965_2184106074024150898-15210/-ext-10002/
+                    table:
+                        input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                        output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                        properties:
+                          columns traffic_signal_status,junction_status,accident_count,avg_severity,avg_duration_minutes
+                          columns.types string:string:bigint:double:double
+                          name team3_projectdb.q5_results
+                          serialization.format 1
+                          serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                        serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                        name: team3_projectdb.q5_results
+                    TotalFiles: 1
+                    GatherStats: true
+                    MultiFileSpray: false
+
+  Stage: Stage-2
+    Dependency Collection
+
+  Stage: Stage-4
+      Create Table Operator:
+        Create Table
+          columns: traffic_signal_status string, junction_status string, accident_count bigint, avg_severity double, avg_duration_minutes double
+          input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+          output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+          serde name: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+          name: team3_projectdb.q5_results
+
+  Stage: Stage-3
+    Stats Work
+      Basic Stats Work:
+          Stats Aggregation Key Prefix: hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/.hive-staging_hive_2026-04-11_00-08-15_965_2184106074024150898-15210/-ext-10002/
+
+  Stage: Stage-0
+    Move Operator
+      files:
+          hdfs directory: true
+          source: hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/.hive-staging_hive_2026-04-11_00-08-15_965_2184106074024150898-15210/-ext-10002
+          destination: hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/q5_results
+
+
+INFO  : Completed compiling command(queryId=hive_20260411000815_3a290b1e-924a-4218-a67f-c02e9bcbb6b3); Time taken: 0.157 seconds
+INFO  : Executing command(queryId=hive_20260411000815_3a290b1e-924a-4218-a67f-c02e9bcbb6b3): CREATE TABLE q5_results
+STORED AS PARQUET
+AS
+SELECT
+CASE
+WHEN rf.traffic_signal = true THEN 'Signal Present'
+WHEN rf.traffic_signal = false THEN 'No Signal'
+ELSE 'Unknown'
+END AS traffic_signal_status,
+CASE
+WHEN rf.junction = true THEN 'Junction'
+WHEN rf.junction = false THEN 'Not Junction'
+ELSE 'Unknown'
+END AS junction_status,
+COUNT(*) AS accident_count,
+ROUND(AVG(CAST(ap.severity AS DOUBLE)), 2) AS avg_severity,
+ROUND(AVG(ap.duration_minutes), 2) AS avg_duration_minutes
+FROM accidents_part ap
+JOIN road_features_buck rf
+ON ap.road_feat_id = rf.id
+GROUP BY
+CASE
+WHEN rf.traffic_signal = true THEN 'Signal Present'
+WHEN rf.traffic_signal = false THEN 'No Signal'
+ELSE 'Unknown'
+END,
+CASE
+WHEN rf.junction = true THEN 'Junction'
+WHEN rf.junction = false THEN 'Not Junction'
+ELSE 'Unknown'
+END
+INFO  : Query ID = hive_20260411000815_3a290b1e-924a-4218-a67f-c02e9bcbb6b3
+INFO  : Total jobs = 1
+INFO  : Launching Job 1 out of 1
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Subscribed to counters: [] for queryId: hive_20260411000815_3a290b1e-924a-4218-a67f-c02e9bcbb6b3
+INFO  : Tez session hasn't been created yet. Opening session
+INFO  : Dag name: CREATE TABLE q5_results
+STOR...'Unknown'
+END (Stage-1)
+INFO  : Setting tez.task.scale.memory.reserve-fraction to 0.30000001192092896
+INFO  : Status: Running (Executing on YARN cluster with App id application_1747772973109_1126)
+
+INFO  : Starting task [Stage-2:DEPENDENCY_COLLECTION] in serial mode
+INFO  : Starting task [Stage-0:MOVE] in serial mode
+INFO  : Moving data to directory hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/q5_results from hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/.hive-staging_hive_2026-04-11_00-08-15_965_2184106074024150898-15210/-ext-10002
+INFO  : Starting task [Stage-4:DDL] in serial mode
+INFO  : Starting task [Stage-3:STATS] in serial mode
+INFO  : Completed executing command(queryId=hive_20260411000815_3a290b1e-924a-4218-a67f-c02e9bcbb6b3); Time taken: 12.28 seconds
+INFO  : OK
+No rows affected (12.479 seconds)
+INFO  : Compiling command(queryId=hive_20260411000828_cdb6b7aa-fec5-4e74-90f6-6b7ddf3c25df): SELECT *
+FROM q5_results
+ORDER BY accident_count DESC
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:q5_results.traffic_signal_status, type:string, comment:null), FieldSchema(name:q5_results.junction_status, type:string, comment:null), FieldSchema(name:q5_results.accident_count, type:bigint, comment:null), FieldSchema(name:q5_results.avg_severity, type:double, comment:null), FieldSchema(name:q5_results.avg_duration_minutes, type:double, comment:null)], properties:null)
+INFO  : EXPLAIN output for queryid hive_20260411000828_cdb6b7aa-fec5-4e74-90f6-6b7ddf3c25df : STAGE DEPENDENCIES:
+  Stage-1 is a root stage [MAPRED]
+  Stage-0 depends on stages: Stage-1 [FETCH]
+
+STAGE PLANS:
+  Stage: Stage-1
+    Tez
+      DagId: hive_20260411000828_cdb6b7aa-fec5-4e74-90f6-6b7ddf3c25df:20818
+      Edges:
+        Reducer 2 <- Map 1 (SIMPLE_EDGE)
+      DagName: hive_20260411000828_cdb6b7aa-fec5-4e74-90f6-6b7ddf3c25df:20818
+      Vertices:
+        Map 1 
+            Map Operator Tree:
+                TableScan
+                  alias: q5_results
+                  Statistics: Num rows: 4 Data size: 20 Basic stats: COMPLETE Column stats: NONE
+                  GatherStats: false
+                  Select Operator
+                    expressions: traffic_signal_status (type: string), junction_status (type: string), accident_count (type: bigint), avg_severity (type: double), avg_duration_minutes (type: double)
+                    outputColumnNames: _col0, _col1, _col2, _col3, _col4
+                    Statistics: Num rows: 4 Data size: 20 Basic stats: COMPLETE Column stats: NONE
+                    Reduce Output Operator
+                      key expressions: _col2 (type: bigint)
+                      null sort order: z
+                      sort order: -
+                      Statistics: Num rows: 4 Data size: 20 Basic stats: COMPLETE Column stats: NONE
+                      tag: -1
+                      value expressions: _col0 (type: string), _col1 (type: string), _col3 (type: double), _col4 (type: double)
+                      auto parallelism: false
+            Execution mode: vectorized
+            Path -> Alias:
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/q5_results [q5_results]
+            Path -> Partition:
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/q5_results 
+                Partition
+                  base file name: q5_results
+                  input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                  properties:
+                    COLUMN_STATS_ACCURATE {"BASIC_STATS":"true"}
+                    bucket_count -1
+                    bucketing_version 2
+                    column.name.delimiter ,
+                    columns traffic_signal_status,junction_status,accident_count,avg_severity,avg_duration_minutes
+                    columns.comments 
+                    columns.types string:string:bigint:double:double
+                    file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/q5_results
+                    name team3_projectdb.q5_results
+                    numFiles 1
+                    numRows 4
+                    rawDataSize 20
+                    serialization.ddl struct q5_results { string traffic_signal_status, string junction_status, i64 accident_count, double avg_severity, double avg_duration_minutes}
+                    serialization.format 1
+                    serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    totalSize 1455
+                    transient_lastDdlTime 1775855308
+                  serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                
+                    input format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                    output format: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                    properties:
+                      COLUMN_STATS_ACCURATE {"BASIC_STATS":"true"}
+                      bucket_count -1
+                      bucketing_version 2
+                      column.name.delimiter ,
+                      columns traffic_signal_status,junction_status,accident_count,avg_severity,avg_duration_minutes
+                      columns.comments 
+                      columns.types string:string:bigint:double:double
+                      file.inputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+                      file.outputformat org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+                      location hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/q5_results
+                      name team3_projectdb.q5_results
+                      numFiles 1
+                      numRows 4
+                      rawDataSize 20
+                      serialization.ddl struct q5_results { string traffic_signal_status, string junction_status, i64 accident_count, double avg_severity, double avg_duration_minutes}
+                      serialization.format 1
+                      serialization.lib org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                      totalSize 1455
+                      transient_lastDdlTime 1775855308
+                    serde: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+                    name: team3_projectdb.q5_results
+                  name: team3_projectdb.q5_results
+            Truncated Path -> Alias:
+              hdfs://hadoop-02.uni.innopolis.ru:8020/user/team3/project/hive/warehouse/q5_results [q5_results]
+        Reducer 2 
+            Execution mode: vectorized
+            Needs Tagging: false
+            Reduce Operator Tree:
+              Select Operator
+                expressions: VALUE._col0 (type: string), VALUE._col1 (type: string), KEY.reducesinkkey0 (type: bigint), VALUE._col2 (type: double), VALUE._col3 (type: double)
+                outputColumnNames: _col0, _col1, _col2, _col3, _col4
+                Statistics: Num rows: 4 Data size: 20 Basic stats: COMPLETE Column stats: NONE
+                File Output Operator
+                  compressed: false
+                  GlobalTableId: 0
+                  directory: hdfs://hadoop-02.uni.innopolis.ru:8020/tmp/hive/team3/8a9dddfe-d0f9-4243-b6af-f87083eb556f/hive_2026-04-11_00-08-28_474_7898529335106865654-15210/-mr-10001/.hive-staging_hive_2026-04-11_00-08-28_474_7898529335106865654-15210/-ext-10002
+                  NumFilesPerFileSink: 1
+                  Statistics: Num rows: 4 Data size: 20 Basic stats: COMPLETE Column stats: NONE
+                  Stats Publishing Key Prefix: hdfs://hadoop-02.uni.innopolis.ru:8020/tmp/hive/team3/8a9dddfe-d0f9-4243-b6af-f87083eb556f/hive_2026-04-11_00-08-28_474_7898529335106865654-15210/-mr-10001/.hive-staging_hive_2026-04-11_00-08-28_474_7898529335106865654-15210/-ext-10002/
+                  table:
+                      input format: org.apache.hadoop.mapred.SequenceFileInputFormat
+                      output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
+                      properties:
+                        columns _col0,_col1,_col2,_col3,_col4
+                        columns.types string:string:bigint:double:double
+                        escape.delim \
+                        hive.serialization.extend.additional.nesting.levels true
+                        serialization.escape.crlf true
+                        serialization.format 1
+                        serialization.lib org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+                      serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+                  TotalFiles: 1
+                  GatherStats: false
+                  MultiFileSpray: false
+
+  Stage: Stage-0
+    Fetch Operator
+      limit: -1
+      Processor Tree:
+        ListSink
+
+
+INFO  : Completed compiling command(queryId=hive_20260411000828_cdb6b7aa-fec5-4e74-90f6-6b7ddf3c25df); Time taken: 0.163 seconds
+INFO  : Executing command(queryId=hive_20260411000828_cdb6b7aa-fec5-4e74-90f6-6b7ddf3c25df): SELECT *
+FROM q5_results
+ORDER BY accident_count DESC
+INFO  : Query ID = hive_20260411000828_cdb6b7aa-fec5-4e74-90f6-6b7ddf3c25df
+INFO  : Total jobs = 1
+INFO  : Launching Job 1 out of 1
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Subscribed to counters: [] for queryId: hive_20260411000828_cdb6b7aa-fec5-4e74-90f6-6b7ddf3c25df
+INFO  : Session is already open
+INFO  : Dag name: SELECT *
+FROM q5_results
+ORDER BY acc...DESC (Stage-1)
+INFO  : Status: Running (Executing on YARN cluster with App id application_1747772973109_1126)
+
+INFO  : Completed executing command(queryId=hive_20260411000828_cdb6b7aa-fec5-4e74-90f6-6b7ddf3c25df); Time taken: 0.625 seconds
+INFO  : OK
+4 rows selected (0.864 seconds)
+Closing: 0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10001
+log4j:WARN No appenders could be found for logger (org.apache.hadoop.util.Shell).
+log4j:WARN Please initialize the log4j system properly.
+log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.

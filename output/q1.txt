@@ -1,0 +1,48 @@
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> USE team3_projectdb;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS q1_results;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE TABLE q1_results
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> AS
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     lp.state AS state,
+. . . . . . . . . . . . . . . . . . . . . . .>     ap.severity AS severity,
+. . . . . . . . . . . . . . . . . . . . . . .>     COUNT(*) AS accident_count,
+. . . . . . . . . . . . . . . . . . . . . . .>     ROUND(AVG(ap.duration_minutes), 2) AS avg_duration_minutes
+. . . . . . . . . . . . . . . . . . . . . . .> FROM accidents_part ap
+. . . . . . . . . . . . . . . . . . . . . . .> JOIN locations_part lp
+. . . . . . . . . . . . . . . . . . . . . . .>     ON ap.location_id = lp.id
+. . . . . . . . . . . . . . . . . . . . . . .> WHERE lp.state IS NOT NULL
+. . . . . . . . . . . . . . . . . . . . . . .> GROUP BY lp.state, ap.severity;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT *
+. . . . . . . . . . . . . . . . . . . . . . .> FROM q1_results
+. . . . . . . . . . . . . . . . . . . . . . .> ORDER BY accident_count DESC
+. . . . . . . . . . . . . . . . . . . . . . .> LIMIT 20;
++-------------------+----------------------+----------------------------+----------------------------------+
+| q1_results.state  | q1_results.severity  | q1_results.accident_count  | q1_results.avg_duration_minutes  |
++-------------------+----------------------+----------------------------+----------------------------------+
+| CA                | 2                    | 1445833                    | 124.51                           |
+| FL                | 2                    | 755895                     | 154.1                            |
+| TX                | 2                    | 450952                     | 103.87                           |
+| SC                | 2                    | 330817                     | 112.43                           |
+| NC                | 2                    | 293066                     | 127.98                           |
+| CA                | 3                    | 271814                     | 59.05                            |
+| NY                | 2                    | 265902                     | 241.01                           |
+| PA                | 2                    | 247991                     | 174.84                           |
+| VA                | 2                    | 230660                     | 133.76                           |
+| OR                | 2                    | 162713                     | 926.52                           |
+| MN                | 2                    | 160848                     | 116.87                           |
+| AZ                | 2                    | 140553                     | 137.51                           |
+| TN                | 2                    | 133054                     | 112.79                           |
+| LA                | 2                    | 127647                     | 15162.17                         |
+| TX                | 3                    | 120443                     | 77.14                            |
+| NJ                | 2                    | 113315                     | 142.9                            |
+| MI                | 2                    | 113020                     | 97.07                            |
+| IL                | 2                    | 105273                     | 137.64                           |
+| FL                | 3                    | 104065                     | 69.1                             |
+| MD                | 2                    | 103558                     | 113.6                            |
++-------------------+----------------------+----------------------------+----------------------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 

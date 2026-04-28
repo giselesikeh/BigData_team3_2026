@@ -1,0 +1,48 @@
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> USE team3_projectdb;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS q2_results;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE TABLE q2_results
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> AS
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     wb.weather_condition AS weather_condition,
+. . . . . . . . . . . . . . . . . . . . . . .>     COUNT(*) AS accident_count,
+. . . . . . . . . . . . . . . . . . . . . . .>     ROUND(AVG(CAST(ap.severity AS DOUBLE)), 2) AS avg_severity,
+. . . . . . . . . . . . . . . . . . . . . . .>     ROUND(AVG(ap.duration_minutes), 2) AS avg_duration_minutes
+. . . . . . . . . . . . . . . . . . . . . . .> FROM accidents_part ap
+. . . . . . . . . . . . . . . . . . . . . . .> JOIN weather_buck wb
+. . . . . . . . . . . . . . . . . . . . . . .>     ON ap.weather_id = wb.id
+. . . . . . . . . . . . . . . . . . . . . . .> WHERE wb.weather_condition IS NOT NULL
+. . . . . . . . . . . . . . . . . . . . . . .> GROUP BY wb.weather_condition;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT *
+. . . . . . . . . . . . . . . . . . . . . . .> FROM q2_results
+. . . . . . . . . . . . . . . . . . . . . . .> ORDER BY accident_count DESC
+. . . . . . . . . . . . . . . . . . . . . . .> LIMIT 20;
++-------------------------------+----------------------------+--------------------------+----------------------------------+
+| q2_results.weather_condition  | q2_results.accident_count  | q2_results.avg_severity  | q2_results.avg_duration_minutes  |
++-------------------------------+----------------------------+--------------------------+----------------------------------+
+| Fair                          | 2560802                    | 2.13                     | 574.69                           |
+| Mostly Cloudy                 | 1016195                    | 2.22                     | 404.62                           |
+| Cloudy                        | 817082                     | 2.16                     | 694.91                           |
+| Clear                         | 808743                     | 2.37                     | 136.77                           |
+| Partly Cloudy                 | 698972                     | 2.22                     | 357.22                           |
+| Overcast                      | 382866                     | 2.39                     | 195.99                           |
+| Light Rain                    | 352957                     | 2.25                     | 388.83                           |
+| Scattered Clouds              | 204829                     | 2.38                     | 134.76                           |
+| Light Snow                    | 128680                     | 2.25                     | 168.28                           |
+| Fog                           | 99238                      | 2.15                     | 563.44                           |
+| Rain                          | 84331                      | 2.26                     | 305.05                           |
+| Haze                          | 76223                      | 2.21                     | 170.0                            |
+| Fair / Windy                  | 35671                      | 2.14                     | 867.64                           |
+| Heavy Rain                    | 32309                      | 2.26                     | 517.81                           |
+| Light Drizzle                 | 22684                      | 2.27                     | 248.4                            |
+| Thunder in the Vicinity       | 17611                      | 2.16                     | 915.9                            |
+| Cloudy / Windy                | 17035                      | 2.17                     | 1188.16                          |
+| T-Storm                       | 16810                      | 2.21                     | 1384.68                          |
+| Mostly Cloudy / Windy         | 16508                      | 2.18                     | 436.65                           |
+| Snow                          | 15537                      | 2.25                     | 177.99                           |
++-------------------------------+----------------------------+--------------------------+----------------------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 

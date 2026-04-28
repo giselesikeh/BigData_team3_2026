@@ -1,0 +1,49 @@
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> USE team3_projectdb;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS q5_results;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE TABLE q5_results
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> AS
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     CASE
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN rf.traffic_signal = true THEN 'Signal Present'
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN rf.traffic_signal = false THEN 'No Signal'
+. . . . . . . . . . . . . . . . . . . . . . .>         ELSE 'Unknown'
+. . . . . . . . . . . . . . . . . . . . . . .>     END AS traffic_signal_status,
+. . . . . . . . . . . . . . . . . . . . . . .>     CASE
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN rf.junction = true THEN 'Junction'
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN rf.junction = false THEN 'Not Junction'
+. . . . . . . . . . . . . . . . . . . . . . .>         ELSE 'Unknown'
+. . . . . . . . . . . . . . . . . . . . . . .>     END AS junction_status,
+. . . . . . . . . . . . . . . . . . . . . . .>     COUNT(*) AS accident_count,
+. . . . . . . . . . . . . . . . . . . . . . .>     ROUND(AVG(CAST(ap.severity AS DOUBLE)), 2) AS avg_severity,
+. . . . . . . . . . . . . . . . . . . . . . .>     ROUND(AVG(ap.duration_minutes), 2) AS avg_duration_minutes
+. . . . . . . . . . . . . . . . . . . . . . .> FROM accidents_part ap
+. . . . . . . . . . . . . . . . . . . . . . .> JOIN road_features_buck rf
+. . . . . . . . . . . . . . . . . . . . . . .>     ON ap.road_feat_id = rf.id
+. . . . . . . . . . . . . . . . . . . . . . .> GROUP BY
+. . . . . . . . . . . . . . . . . . . . . . .>     CASE
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN rf.traffic_signal = true THEN 'Signal Present'
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN rf.traffic_signal = false THEN 'No Signal'
+. . . . . . . . . . . . . . . . . . . . . . .>         ELSE 'Unknown'
+. . . . . . . . . . . . . . . . . . . . . . .>     END,
+. . . . . . . . . . . . . . . . . . . . . . .>     CASE
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN rf.junction = true THEN 'Junction'
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN rf.junction = false THEN 'Not Junction'
+. . . . . . . . . . . . . . . . . . . . . . .>         ELSE 'Unknown'
+. . . . . . . . . . . . . . . . . . . . . . .>     END;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT *
+. . . . . . . . . . . . . . . . . . . . . . .> FROM q5_results
+. . . . . . . . . . . . . . . . . . . . . . .> ORDER BY accident_count DESC;
++-----------------------------------+-----------------------------+----------------------------+--------------------------+----------------------------------+
+| q5_results.traffic_signal_status  | q5_results.junction_status  | q5_results.accident_count  | q5_results.avg_severity  | q5_results.avg_duration_minutes  |
++-----------------------------------+-----------------------------+----------------------------+--------------------------+----------------------------------+
+| No Signal                         | Not Junction                | 6022608                    | 2.23                     | 463.46                           |
+| Signal Present                    | Not Junction                | 1134444                    | 2.09                     | 150.12                           |
+| No Signal                         | Junction                    | 562014                     | 2.3                      | 838.8                            |
+| Signal Present                    | Junction                    | 9328                       | 2.34                     | 179.27                           |
++-----------------------------------+-----------------------------+----------------------------+--------------------------+----------------------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 

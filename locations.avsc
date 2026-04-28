@@ -1,0 +1,85 @@
+{
+  "type" : "record",
+  "name" : "locations",
+  "doc" : "Sqoop import of locations",
+  "fields" : [ {
+    "name" : "id",
+    "type" : [ "null", "long" ],
+    "default" : null,
+    "columnName" : "id",
+    "sqlType" : "-5"
+  }, {
+    "name" : "location_key",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "location_key",
+    "sqlType" : "12"
+  }, {
+    "name" : "start_lat",
+    "type" : [ "null", "double" ],
+    "default" : null,
+    "columnName" : "start_lat",
+    "sqlType" : "8"
+  }, {
+    "name" : "start_lng",
+    "type" : [ "null", "double" ],
+    "default" : null,
+    "columnName" : "start_lng",
+    "sqlType" : "8"
+  }, {
+    "name" : "end_lat",
+    "type" : [ "null", "double" ],
+    "default" : null,
+    "columnName" : "end_lat",
+    "sqlType" : "8"
+  }, {
+    "name" : "end_lng",
+    "type" : [ "null", "double" ],
+    "default" : null,
+    "columnName" : "end_lng",
+    "sqlType" : "8"
+  }, {
+    "name" : "street",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "street",
+    "sqlType" : "12"
+  }, {
+    "name" : "city",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "city",
+    "sqlType" : "12"
+  }, {
+    "name" : "county",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "county",
+    "sqlType" : "12"
+  }, {
+    "name" : "state",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "state",
+    "sqlType" : "1"
+  }, {
+    "name" : "zipcode",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "zipcode",
+    "sqlType" : "12"
+  }, {
+    "name" : "country",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "country",
+    "sqlType" : "12"
+  }, {
+    "name" : "timezone",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "timezone",
+    "sqlType" : "12"
+  } ],
+  "tableName" : "locations"
+}

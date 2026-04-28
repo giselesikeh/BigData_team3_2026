@@ -1,0 +1,1361 @@
+log4j:WARN No appenders could be found for logger (org.apache.hadoop.util.Shell).
+log4j:WARN Please initialize the log4j system properly.
+log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
+Connecting to jdbc:hive2://hadoop-03.uni.innopolis.ru:10001
+Connected to: Apache Hive (version 3.1.3)
+Driver: Hive JDBC (version 2.3.9)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+INFO  : Compiling command(queryId=hive_20260428131347_79ff0366-7a0c-46b1-a8c3-c120221e0c94): USE team3_projectdb
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131347_79ff0366-7a0c-46b1-a8c3-c120221e0c94 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131347_79ff0366-7a0c-46b1-a8c3-c120221e0c94); Time taken: 0.045 seconds
+INFO  : Executing command(queryId=hive_20260428131347_79ff0366-7a0c-46b1-a8c3-c120221e0c94): USE team3_projectdb
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131347_79ff0366-7a0c-46b1-a8c3-c120221e0c94); Time taken: 0.008 seconds
+INFO  : OK
+No rows affected (0.108 seconds)
+INFO  : Compiling command(queryId=hive_20260428131347_3785169a-c187-41cc-891a-ffede2d1aa20): DROP VIEW IF EXISTS stage4_label_distribution_all
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131347_3785169a-c187-41cc-891a-ffede2d1aa20 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Drop Table Operator:
+        Drop Table
+          table: stage4_label_distribution_all
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131347_3785169a-c187-41cc-891a-ffede2d1aa20); Time taken: 0.034 seconds
+INFO  : Executing command(queryId=hive_20260428131347_3785169a-c187-41cc-891a-ffede2d1aa20): DROP VIEW IF EXISTS stage4_label_distribution_all
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131347_3785169a-c187-41cc-891a-ffede2d1aa20); Time taken: 0.038 seconds
+INFO  : OK
+No rows affected (0.091 seconds)
+INFO  : Compiling command(queryId=hive_20260428131347_b87b8813-af58-4a9b-8701-b50ebf362920): DROP VIEW IF EXISTS stage4_prediction_distribution_all
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131347_b87b8813-af58-4a9b-8701-b50ebf362920 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Drop Table Operator:
+        Drop Table
+          table: stage4_prediction_distribution_all
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131347_b87b8813-af58-4a9b-8701-b50ebf362920); Time taken: 0.033 seconds
+INFO  : Executing command(queryId=hive_20260428131347_b87b8813-af58-4a9b-8701-b50ebf362920): DROP VIEW IF EXISTS stage4_prediction_distribution_all
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131347_b87b8813-af58-4a9b-8701-b50ebf362920); Time taken: 0.039 seconds
+INFO  : OK
+No rows affected (0.1 seconds)
+INFO  : Compiling command(queryId=hive_20260428131348_51f9a1c7-03e5-46e1-a4c5-d084afcef0bd): DROP VIEW IF EXISTS stage4_per_class_metrics_all
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131348_51f9a1c7-03e5-46e1-a4c5-d084afcef0bd : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Drop Table Operator:
+        Drop Table
+          table: stage4_per_class_metrics_all
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131348_51f9a1c7-03e5-46e1-a4c5-d084afcef0bd); Time taken: 0.032 seconds
+INFO  : Executing command(queryId=hive_20260428131348_51f9a1c7-03e5-46e1-a4c5-d084afcef0bd): DROP VIEW IF EXISTS stage4_per_class_metrics_all
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131348_51f9a1c7-03e5-46e1-a4c5-d084afcef0bd); Time taken: 0.037 seconds
+INFO  : OK
+No rows affected (0.086 seconds)
+INFO  : Compiling command(queryId=hive_20260428131348_200ae550-3abd-4bfb-a9c5-9b74addb6abf): DROP VIEW IF EXISTS stage4_confusion_matrix_all
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131348_200ae550-3abd-4bfb-a9c5-9b74addb6abf : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Drop Table Operator:
+        Drop Table
+          table: stage4_confusion_matrix_all
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131348_200ae550-3abd-4bfb-a9c5-9b74addb6abf); Time taken: 0.035 seconds
+INFO  : Executing command(queryId=hive_20260428131348_200ae550-3abd-4bfb-a9c5-9b74addb6abf): DROP VIEW IF EXISTS stage4_confusion_matrix_all
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131348_200ae550-3abd-4bfb-a9c5-9b74addb6abf); Time taken: 0.036 seconds
+INFO  : OK
+No rows affected (0.09 seconds)
+INFO  : Compiling command(queryId=hive_20260428131348_c38b0495-ed67-4677-ad78-2e4f8ad6944f): DROP VIEW IF EXISTS stage4_prediction_samples_all
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131348_c38b0495-ed67-4677-ad78-2e4f8ad6944f : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Drop Table Operator:
+        Drop Table
+          table: stage4_prediction_samples_all
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131348_c38b0495-ed67-4677-ad78-2e4f8ad6944f); Time taken: 0.032 seconds
+INFO  : Executing command(queryId=hive_20260428131348_c38b0495-ed67-4677-ad78-2e4f8ad6944f): DROP VIEW IF EXISTS stage4_prediction_samples_all
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131348_c38b0495-ed67-4677-ad78-2e4f8ad6944f); Time taken: 0.037 seconds
+INFO  : OK
+No rows affected (0.088 seconds)
+INFO  : Compiling command(queryId=hive_20260428131348_cd07d7b9-b8f1-4982-9956-6d44fd89f337): DROP VIEW IF EXISTS stage4_modeling_summary
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131348_cd07d7b9-b8f1-4982-9956-6d44fd89f337 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Drop Table Operator:
+        Drop Table
+          table: stage4_modeling_summary
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131348_cd07d7b9-b8f1-4982-9956-6d44fd89f337); Time taken: 0.033 seconds
+INFO  : Executing command(queryId=hive_20260428131348_cd07d7b9-b8f1-4982-9956-6d44fd89f337): DROP VIEW IF EXISTS stage4_modeling_summary
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131348_cd07d7b9-b8f1-4982-9956-6d44fd89f337); Time taken: 0.038 seconds
+INFO  : OK
+No rows affected (0.088 seconds)
+INFO  : Compiling command(queryId=hive_20260428131348_c7e62285-cc28-4633-ac45-38b99463d5dd): DROP TABLE IF EXISTS stage4_evaluation
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131348_c7e62285-cc28-4633-ac45-38b99463d5dd : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Drop Table Operator:
+        Drop Table
+          table: stage4_evaluation
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131348_c7e62285-cc28-4633-ac45-38b99463d5dd); Time taken: 0.033 seconds
+INFO  : Executing command(queryId=hive_20260428131348_c7e62285-cc28-4633-ac45-38b99463d5dd): DROP TABLE IF EXISTS stage4_evaluation
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131348_c7e62285-cc28-4633-ac45-38b99463d5dd); Time taken: 0.038 seconds
+INFO  : OK
+No rows affected (0.09 seconds)
+INFO  : Compiling command(queryId=hive_20260428131348_be107f3d-906d-4849-b547-7ebe40329a47): DROP TABLE IF EXISTS stage4_train_label_distribution
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131348_be107f3d-906d-4849-b547-7ebe40329a47 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Drop Table Operator:
+        Drop Table
+          table: stage4_train_label_distribution
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131348_be107f3d-906d-4849-b547-7ebe40329a47); Time taken: 0.034 seconds
+INFO  : Executing command(queryId=hive_20260428131348_be107f3d-906d-4849-b547-7ebe40329a47): DROP TABLE IF EXISTS stage4_train_label_distribution
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131348_be107f3d-906d-4849-b547-7ebe40329a47); Time taken: 0.04 seconds
+INFO  : OK
+No rows affected (0.09 seconds)
+INFO  : Compiling command(queryId=hive_20260428131348_67689c41-5018-4ec2-b830-36c729cbc9fc): DROP TABLE IF EXISTS stage4_test_label_distribution
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131348_67689c41-5018-4ec2-b830-36c729cbc9fc : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Drop Table Operator:
+        Drop Table
+          table: stage4_test_label_distribution
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131348_67689c41-5018-4ec2-b830-36c729cbc9fc); Time taken: 0.032 seconds
+INFO  : Executing command(queryId=hive_20260428131348_67689c41-5018-4ec2-b830-36c729cbc9fc): DROP TABLE IF EXISTS stage4_test_label_distribution
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131348_67689c41-5018-4ec2-b830-36c729cbc9fc); Time taken: 0.043 seconds
+INFO  : OK
+No rows affected (0.092 seconds)
+INFO  : Compiling command(queryId=hive_20260428131348_82596b22-f228-4aa5-bc65-52e6f4668b5f): DROP TABLE IF EXISTS stage4_model1_prediction_distribution
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131348_82596b22-f228-4aa5-bc65-52e6f4668b5f : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Drop Table Operator:
+        Drop Table
+          table: stage4_model1_prediction_distribution
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131348_82596b22-f228-4aa5-bc65-52e6f4668b5f); Time taken: 0.04 seconds
+INFO  : Executing command(queryId=hive_20260428131348_82596b22-f228-4aa5-bc65-52e6f4668b5f): DROP TABLE IF EXISTS stage4_model1_prediction_distribution
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131348_82596b22-f228-4aa5-bc65-52e6f4668b5f); Time taken: 0.038 seconds
+INFO  : OK
+No rows affected (0.094 seconds)
+INFO  : Compiling command(queryId=hive_20260428131348_4e50f468-aee8-420d-9147-9c7300eb9f82): DROP TABLE IF EXISTS stage4_model2_prediction_distribution
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131348_4e50f468-aee8-420d-9147-9c7300eb9f82 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Drop Table Operator:
+        Drop Table
+          table: stage4_model2_prediction_distribution
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131348_4e50f468-aee8-420d-9147-9c7300eb9f82); Time taken: 0.033 seconds
+INFO  : Executing command(queryId=hive_20260428131348_4e50f468-aee8-420d-9147-9c7300eb9f82): DROP TABLE IF EXISTS stage4_model2_prediction_distribution
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131348_4e50f468-aee8-420d-9147-9c7300eb9f82); Time taken: 0.039 seconds
+INFO  : OK
+No rows affected (0.088 seconds)
+INFO  : Compiling command(queryId=hive_20260428131348_8789ccca-b68b-4f93-ad5a-999925a7843f): DROP TABLE IF EXISTS stage4_model1_per_class_metrics
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131348_8789ccca-b68b-4f93-ad5a-999925a7843f : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Drop Table Operator:
+        Drop Table
+          table: stage4_model1_per_class_metrics
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131348_8789ccca-b68b-4f93-ad5a-999925a7843f); Time taken: 0.033 seconds
+INFO  : Executing command(queryId=hive_20260428131348_8789ccca-b68b-4f93-ad5a-999925a7843f): DROP TABLE IF EXISTS stage4_model1_per_class_metrics
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131348_8789ccca-b68b-4f93-ad5a-999925a7843f); Time taken: 0.04 seconds
+INFO  : OK
+No rows affected (0.091 seconds)
+INFO  : Compiling command(queryId=hive_20260428131349_a5b27a98-0797-4850-a26d-3f744a3b3935): DROP TABLE IF EXISTS stage4_model2_per_class_metrics
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131349_a5b27a98-0797-4850-a26d-3f744a3b3935 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Drop Table Operator:
+        Drop Table
+          table: stage4_model2_per_class_metrics
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131349_a5b27a98-0797-4850-a26d-3f744a3b3935); Time taken: 0.034 seconds
+INFO  : Executing command(queryId=hive_20260428131349_a5b27a98-0797-4850-a26d-3f744a3b3935): DROP TABLE IF EXISTS stage4_model2_per_class_metrics
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131349_a5b27a98-0797-4850-a26d-3f744a3b3935); Time taken: 0.042 seconds
+INFO  : OK
+No rows affected (0.093 seconds)
+INFO  : Compiling command(queryId=hive_20260428131349_75401a84-ccbd-47be-8ce5-8daeb87867cc): DROP TABLE IF EXISTS stage4_model1_confusion_matrix
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131349_75401a84-ccbd-47be-8ce5-8daeb87867cc : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Drop Table Operator:
+        Drop Table
+          table: stage4_model1_confusion_matrix
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131349_75401a84-ccbd-47be-8ce5-8daeb87867cc); Time taken: 0.033 seconds
+INFO  : Executing command(queryId=hive_20260428131349_75401a84-ccbd-47be-8ce5-8daeb87867cc): DROP TABLE IF EXISTS stage4_model1_confusion_matrix
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131349_75401a84-ccbd-47be-8ce5-8daeb87867cc); Time taken: 0.039 seconds
+INFO  : OK
+No rows affected (0.089 seconds)
+INFO  : Compiling command(queryId=hive_20260428131349_9fd6e678-fd3b-4a97-bed2-0cf8a20e2131): DROP TABLE IF EXISTS stage4_model2_confusion_matrix
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131349_9fd6e678-fd3b-4a97-bed2-0cf8a20e2131 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Drop Table Operator:
+        Drop Table
+          table: stage4_model2_confusion_matrix
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131349_9fd6e678-fd3b-4a97-bed2-0cf8a20e2131); Time taken: 0.033 seconds
+INFO  : Executing command(queryId=hive_20260428131349_9fd6e678-fd3b-4a97-bed2-0cf8a20e2131): DROP TABLE IF EXISTS stage4_model2_confusion_matrix
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131349_9fd6e678-fd3b-4a97-bed2-0cf8a20e2131); Time taken: 0.039 seconds
+INFO  : OK
+No rows affected (0.089 seconds)
+INFO  : Compiling command(queryId=hive_20260428131349_9801672f-9a8b-425c-9d26-23e6bf6fa3da): DROP TABLE IF EXISTS stage4_model1_predictions
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131349_9801672f-9a8b-425c-9d26-23e6bf6fa3da : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Drop Table Operator:
+        Drop Table
+          table: stage4_model1_predictions
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131349_9801672f-9a8b-425c-9d26-23e6bf6fa3da); Time taken: 0.036 seconds
+INFO  : Executing command(queryId=hive_20260428131349_9801672f-9a8b-425c-9d26-23e6bf6fa3da): DROP TABLE IF EXISTS stage4_model1_predictions
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131349_9801672f-9a8b-425c-9d26-23e6bf6fa3da); Time taken: 0.043 seconds
+INFO  : OK
+No rows affected (0.096 seconds)
+INFO  : Compiling command(queryId=hive_20260428131349_b8799edc-07cf-4cfd-832c-879a8417f6a3): DROP TABLE IF EXISTS stage4_model2_predictions
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131349_b8799edc-07cf-4cfd-832c-879a8417f6a3 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Drop Table Operator:
+        Drop Table
+          table: stage4_model2_predictions
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131349_b8799edc-07cf-4cfd-832c-879a8417f6a3); Time taken: 0.033 seconds
+INFO  : Executing command(queryId=hive_20260428131349_b8799edc-07cf-4cfd-832c-879a8417f6a3): DROP TABLE IF EXISTS stage4_model2_predictions
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131349_b8799edc-07cf-4cfd-832c-879a8417f6a3); Time taken: 0.048 seconds
+INFO  : OK
+No rows affected (0.097 seconds)
+INFO  : Compiling command(queryId=hive_20260428131349_e77430fb-764d-4b29-ad4e-0f34537ed441): CREATE EXTERNAL TABLE stage4_evaluation (
+model STRING,
+imbalance_strategy STRING,
+accuracy DOUBLE,
+weighted_precision DOUBLE,
+weighted_recall DOUBLE,
+weighted_f1 DOUBLE,
+macro_precision DOUBLE,
+macro_recall DOUBLE,
+macro_f1 DOUBLE
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/evaluation'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131349_e77430fb-764d-4b29-ad4e-0f34537ed441 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Create Table Operator:
+        Create Table
+          columns: model string, imbalance_strategy string, accuracy double, weighted_precision double, weighted_recall double, weighted_f1 double, macro_precision double, macro_recall double, macro_f1 double
+          input format: org.apache.hadoop.mapred.TextInputFormat
+          location: /user/team3/project/output/evaluation
+          output format: org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat
+          serde name: org.apache.hadoop.hive.serde2.OpenCSVSerde
+          serde properties:
+            quoteChar "
+            separatorChar ,
+          name: team3_projectdb.stage4_evaluation
+          table properties:
+            skip.header.line.count 1
+          isExternal: true
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131349_e77430fb-764d-4b29-ad4e-0f34537ed441); Time taken: 0.03 seconds
+INFO  : Executing command(queryId=hive_20260428131349_e77430fb-764d-4b29-ad4e-0f34537ed441): CREATE EXTERNAL TABLE stage4_evaluation (
+model STRING,
+imbalance_strategy STRING,
+accuracy DOUBLE,
+weighted_precision DOUBLE,
+weighted_recall DOUBLE,
+weighted_f1 DOUBLE,
+macro_precision DOUBLE,
+macro_recall DOUBLE,
+macro_f1 DOUBLE
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/evaluation'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131349_e77430fb-764d-4b29-ad4e-0f34537ed441); Time taken: 0.022 seconds
+INFO  : OK
+No rows affected (0.08 seconds)
+INFO  : Compiling command(queryId=hive_20260428131349_79897c99-d728-480b-8477-479898966bf6): CREATE EXTERNAL TABLE stage4_train_label_distribution (
+severity INT,
+record_count BIGINT
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/train_label_distribution'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131349_79897c99-d728-480b-8477-479898966bf6 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Create Table Operator:
+        Create Table
+          columns: severity int, record_count bigint
+          input format: org.apache.hadoop.mapred.TextInputFormat
+          location: /user/team3/project/output/train_label_distribution
+          output format: org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat
+          serde name: org.apache.hadoop.hive.serde2.OpenCSVSerde
+          serde properties:
+            quoteChar "
+            separatorChar ,
+          name: team3_projectdb.stage4_train_label_distribution
+          table properties:
+            skip.header.line.count 1
+          isExternal: true
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131349_79897c99-d728-480b-8477-479898966bf6); Time taken: 0.031 seconds
+INFO  : Executing command(queryId=hive_20260428131349_79897c99-d728-480b-8477-479898966bf6): CREATE EXTERNAL TABLE stage4_train_label_distribution (
+severity INT,
+record_count BIGINT
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/train_label_distribution'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131349_79897c99-d728-480b-8477-479898966bf6); Time taken: 0.029 seconds
+INFO  : OK
+No rows affected (0.085 seconds)
+INFO  : Compiling command(queryId=hive_20260428131350_063ee3d6-db76-4c0c-95e8-2809a37583ca): CREATE EXTERNAL TABLE stage4_test_label_distribution (
+severity INT,
+record_count BIGINT
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/test_label_distribution'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131350_063ee3d6-db76-4c0c-95e8-2809a37583ca : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Create Table Operator:
+        Create Table
+          columns: severity int, record_count bigint
+          input format: org.apache.hadoop.mapred.TextInputFormat
+          location: /user/team3/project/output/test_label_distribution
+          output format: org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat
+          serde name: org.apache.hadoop.hive.serde2.OpenCSVSerde
+          serde properties:
+            quoteChar "
+            separatorChar ,
+          name: team3_projectdb.stage4_test_label_distribution
+          table properties:
+            skip.header.line.count 1
+          isExternal: true
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131350_063ee3d6-db76-4c0c-95e8-2809a37583ca); Time taken: 0.037 seconds
+INFO  : Executing command(queryId=hive_20260428131350_063ee3d6-db76-4c0c-95e8-2809a37583ca): CREATE EXTERNAL TABLE stage4_test_label_distribution (
+severity INT,
+record_count BIGINT
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/test_label_distribution'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131350_063ee3d6-db76-4c0c-95e8-2809a37583ca); Time taken: 0.028 seconds
+INFO  : OK
+No rows affected (0.136 seconds)
+INFO  : Compiling command(queryId=hive_20260428131350_0ffd3a92-1fa1-4c94-9644-03fbc1b2683a): CREATE EXTERNAL TABLE stage4_model1_prediction_distribution (
+severity INT,
+record_count BIGINT
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/model1_prediction_distribution'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131350_0ffd3a92-1fa1-4c94-9644-03fbc1b2683a : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Create Table Operator:
+        Create Table
+          columns: severity int, record_count bigint
+          input format: org.apache.hadoop.mapred.TextInputFormat
+          location: /user/team3/project/output/model1_prediction_distribution
+          output format: org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat
+          serde name: org.apache.hadoop.hive.serde2.OpenCSVSerde
+          serde properties:
+            quoteChar "
+            separatorChar ,
+          name: team3_projectdb.stage4_model1_prediction_distribution
+          table properties:
+            skip.header.line.count 1
+          isExternal: true
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131350_0ffd3a92-1fa1-4c94-9644-03fbc1b2683a); Time taken: 0.03 seconds
+INFO  : Executing command(queryId=hive_20260428131350_0ffd3a92-1fa1-4c94-9644-03fbc1b2683a): CREATE EXTERNAL TABLE stage4_model1_prediction_distribution (
+severity INT,
+record_count BIGINT
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/model1_prediction_distribution'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131350_0ffd3a92-1fa1-4c94-9644-03fbc1b2683a); Time taken: 0.02 seconds
+INFO  : OK
+No rows affected (0.074 seconds)
+INFO  : Compiling command(queryId=hive_20260428131350_712fb0f5-173c-411f-94f1-fc87a7159f87): CREATE EXTERNAL TABLE stage4_model2_prediction_distribution (
+severity INT,
+record_count BIGINT
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/model2_prediction_distribution'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131350_712fb0f5-173c-411f-94f1-fc87a7159f87 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Create Table Operator:
+        Create Table
+          columns: severity int, record_count bigint
+          input format: org.apache.hadoop.mapred.TextInputFormat
+          location: /user/team3/project/output/model2_prediction_distribution
+          output format: org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat
+          serde name: org.apache.hadoop.hive.serde2.OpenCSVSerde
+          serde properties:
+            quoteChar "
+            separatorChar ,
+          name: team3_projectdb.stage4_model2_prediction_distribution
+          table properties:
+            skip.header.line.count 1
+          isExternal: true
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131350_712fb0f5-173c-411f-94f1-fc87a7159f87); Time taken: 0.031 seconds
+INFO  : Executing command(queryId=hive_20260428131350_712fb0f5-173c-411f-94f1-fc87a7159f87): CREATE EXTERNAL TABLE stage4_model2_prediction_distribution (
+severity INT,
+record_count BIGINT
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/model2_prediction_distribution'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131350_712fb0f5-173c-411f-94f1-fc87a7159f87); Time taken: 0.024 seconds
+INFO  : OK
+No rows affected (0.079 seconds)
+INFO  : Compiling command(queryId=hive_20260428131350_6ab3204a-2ecf-466e-9ab4-ed4d161e8a55): CREATE EXTERNAL TABLE stage4_model1_per_class_metrics (
+severity INT,
+precision_score DOUBLE,
+recall_score DOUBLE,
+f1_score DOUBLE
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/model1_per_class_metrics'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131350_6ab3204a-2ecf-466e-9ab4-ed4d161e8a55 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Create Table Operator:
+        Create Table
+          columns: severity int, precision_score double, recall_score double, f1_score double
+          input format: org.apache.hadoop.mapred.TextInputFormat
+          location: /user/team3/project/output/model1_per_class_metrics
+          output format: org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat
+          serde name: org.apache.hadoop.hive.serde2.OpenCSVSerde
+          serde properties:
+            quoteChar "
+            separatorChar ,
+          name: team3_projectdb.stage4_model1_per_class_metrics
+          table properties:
+            skip.header.line.count 1
+          isExternal: true
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131350_6ab3204a-2ecf-466e-9ab4-ed4d161e8a55); Time taken: 0.03 seconds
+INFO  : Executing command(queryId=hive_20260428131350_6ab3204a-2ecf-466e-9ab4-ed4d161e8a55): CREATE EXTERNAL TABLE stage4_model1_per_class_metrics (
+severity INT,
+precision_score DOUBLE,
+recall_score DOUBLE,
+f1_score DOUBLE
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/model1_per_class_metrics'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131350_6ab3204a-2ecf-466e-9ab4-ed4d161e8a55); Time taken: 0.017 seconds
+INFO  : OK
+No rows affected (0.072 seconds)
+INFO  : Compiling command(queryId=hive_20260428131350_a95fafc0-fd47-45e8-97a9-dbbe9ee73c78): CREATE EXTERNAL TABLE stage4_model2_per_class_metrics (
+severity INT,
+precision_score DOUBLE,
+recall_score DOUBLE,
+f1_score DOUBLE
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/model2_per_class_metrics'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131350_a95fafc0-fd47-45e8-97a9-dbbe9ee73c78 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Create Table Operator:
+        Create Table
+          columns: severity int, precision_score double, recall_score double, f1_score double
+          input format: org.apache.hadoop.mapred.TextInputFormat
+          location: /user/team3/project/output/model2_per_class_metrics
+          output format: org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat
+          serde name: org.apache.hadoop.hive.serde2.OpenCSVSerde
+          serde properties:
+            quoteChar "
+            separatorChar ,
+          name: team3_projectdb.stage4_model2_per_class_metrics
+          table properties:
+            skip.header.line.count 1
+          isExternal: true
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131350_a95fafc0-fd47-45e8-97a9-dbbe9ee73c78); Time taken: 0.029 seconds
+INFO  : Executing command(queryId=hive_20260428131350_a95fafc0-fd47-45e8-97a9-dbbe9ee73c78): CREATE EXTERNAL TABLE stage4_model2_per_class_metrics (
+severity INT,
+precision_score DOUBLE,
+recall_score DOUBLE,
+f1_score DOUBLE
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/model2_per_class_metrics'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131350_a95fafc0-fd47-45e8-97a9-dbbe9ee73c78); Time taken: 0.027 seconds
+INFO  : OK
+No rows affected (0.08 seconds)
+INFO  : Compiling command(queryId=hive_20260428131350_e037c3b6-d204-4c16-bb56-7994fa1485df): CREATE EXTERNAL TABLE stage4_model1_confusion_matrix (
+true_severity INT,
+predicted_severity INT,
+record_count BIGINT
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/model1_confusion_matrix'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131350_e037c3b6-d204-4c16-bb56-7994fa1485df : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Create Table Operator:
+        Create Table
+          columns: true_severity int, predicted_severity int, record_count bigint
+          input format: org.apache.hadoop.mapred.TextInputFormat
+          location: /user/team3/project/output/model1_confusion_matrix
+          output format: org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat
+          serde name: org.apache.hadoop.hive.serde2.OpenCSVSerde
+          serde properties:
+            quoteChar "
+            separatorChar ,
+          name: team3_projectdb.stage4_model1_confusion_matrix
+          table properties:
+            skip.header.line.count 1
+          isExternal: true
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131350_e037c3b6-d204-4c16-bb56-7994fa1485df); Time taken: 0.028 seconds
+INFO  : Executing command(queryId=hive_20260428131350_e037c3b6-d204-4c16-bb56-7994fa1485df): CREATE EXTERNAL TABLE stage4_model1_confusion_matrix (
+true_severity INT,
+predicted_severity INT,
+record_count BIGINT
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/model1_confusion_matrix'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131350_e037c3b6-d204-4c16-bb56-7994fa1485df); Time taken: 0.029 seconds
+INFO  : OK
+No rows affected (0.081 seconds)
+INFO  : Compiling command(queryId=hive_20260428131350_84966272-2623-41a0-bd3b-c29ec8157105): CREATE EXTERNAL TABLE stage4_model2_confusion_matrix (
+true_severity INT,
+predicted_severity INT,
+record_count BIGINT
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/model2_confusion_matrix'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131350_84966272-2623-41a0-bd3b-c29ec8157105 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Create Table Operator:
+        Create Table
+          columns: true_severity int, predicted_severity int, record_count bigint
+          input format: org.apache.hadoop.mapred.TextInputFormat
+          location: /user/team3/project/output/model2_confusion_matrix
+          output format: org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat
+          serde name: org.apache.hadoop.hive.serde2.OpenCSVSerde
+          serde properties:
+            quoteChar "
+            separatorChar ,
+          name: team3_projectdb.stage4_model2_confusion_matrix
+          table properties:
+            skip.header.line.count 1
+          isExternal: true
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131350_84966272-2623-41a0-bd3b-c29ec8157105); Time taken: 0.028 seconds
+INFO  : Executing command(queryId=hive_20260428131350_84966272-2623-41a0-bd3b-c29ec8157105): CREATE EXTERNAL TABLE stage4_model2_confusion_matrix (
+true_severity INT,
+predicted_severity INT,
+record_count BIGINT
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/model2_confusion_matrix'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131350_84966272-2623-41a0-bd3b-c29ec8157105); Time taken: 0.02 seconds
+INFO  : OK
+No rows affected (0.073 seconds)
+INFO  : Compiling command(queryId=hive_20260428131351_3ed6a3b2-8cf3-45ce-abca-665e9ef2ef87): CREATE EXTERNAL TABLE stage4_model1_predictions (
+true_severity INT,
+predicted_severity INT
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/model1_predictions'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131351_3ed6a3b2-8cf3-45ce-abca-665e9ef2ef87 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Create Table Operator:
+        Create Table
+          columns: true_severity int, predicted_severity int
+          input format: org.apache.hadoop.mapred.TextInputFormat
+          location: /user/team3/project/output/model1_predictions
+          output format: org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat
+          serde name: org.apache.hadoop.hive.serde2.OpenCSVSerde
+          serde properties:
+            quoteChar "
+            separatorChar ,
+          name: team3_projectdb.stage4_model1_predictions
+          table properties:
+            skip.header.line.count 1
+          isExternal: true
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131351_3ed6a3b2-8cf3-45ce-abca-665e9ef2ef87); Time taken: 0.028 seconds
+INFO  : Executing command(queryId=hive_20260428131351_3ed6a3b2-8cf3-45ce-abca-665e9ef2ef87): CREATE EXTERNAL TABLE stage4_model1_predictions (
+true_severity INT,
+predicted_severity INT
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/model1_predictions'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131351_3ed6a3b2-8cf3-45ce-abca-665e9ef2ef87); Time taken: 0.02 seconds
+INFO  : OK
+No rows affected (0.071 seconds)
+INFO  : Compiling command(queryId=hive_20260428131351_02242121-231b-4eb0-94a6-b367d7e56e5d): CREATE EXTERNAL TABLE stage4_model2_predictions (
+true_severity INT,
+predicted_severity INT
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/model2_predictions'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131351_02242121-231b-4eb0-94a6-b367d7e56e5d : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Create Table Operator:
+        Create Table
+          columns: true_severity int, predicted_severity int
+          input format: org.apache.hadoop.mapred.TextInputFormat
+          location: /user/team3/project/output/model2_predictions
+          output format: org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat
+          serde name: org.apache.hadoop.hive.serde2.OpenCSVSerde
+          serde properties:
+            quoteChar "
+            separatorChar ,
+          name: team3_projectdb.stage4_model2_predictions
+          table properties:
+            skip.header.line.count 1
+          isExternal: true
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131351_02242121-231b-4eb0-94a6-b367d7e56e5d); Time taken: 0.03 seconds
+INFO  : Executing command(queryId=hive_20260428131351_02242121-231b-4eb0-94a6-b367d7e56e5d): CREATE EXTERNAL TABLE stage4_model2_predictions (
+true_severity INT,
+predicted_severity INT
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/team3/project/output/model2_predictions'
+TBLPROPERTIES ("skip.header.line.count"="1")
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131351_02242121-231b-4eb0-94a6-b367d7e56e5d); Time taken: 0.017 seconds
+INFO  : OK
+No rows affected (0.071 seconds)
+INFO  : Compiling command(queryId=hive_20260428131351_841a6f4b-30ce-41da-a0bb-7a315002e100): CREATE VIEW stage4_label_distribution_all AS
+SELECT 'Train set' AS dataset_split, severity, record_count
+FROM stage4_train_label_distribution
+UNION ALL
+SELECT 'Test set' AS dataset_split, severity, record_count
+FROM stage4_test_label_distribution
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:dataset_split, type:string, comment:null), FieldSchema(name:severity, type:string, comment:null), FieldSchema(name:record_count, type:string, comment:null)], properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131351_841a6f4b-30ce-41da-a0bb-7a315002e100 : STAGE DEPENDENCIES:
+  Stage-1 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-1
+      Create View Operator:
+        Create View
+          columns: dataset_split string, severity string, record_count string
+          expanded text: SELECT 'Train set' AS `dataset_split`, `stage4_train_label_distribution`.`severity`, `stage4_train_label_distribution`.`record_count`
+FROM `team3_projectdb`.`stage4_train_label_distribution`
+UNION ALL
+SELECT 'Test set' AS `dataset_split`, `stage4_test_label_distribution`.`severity`, `stage4_test_label_distribution`.`record_count`
+FROM `team3_projectdb`.`stage4_test_label_distribution`
+          name: team3_projectdb.stage4_label_distribution_all
+          original text: SELECT 'Train set' AS dataset_split, severity, record_count
+FROM stage4_train_label_distribution
+UNION ALL
+SELECT 'Test set' AS dataset_split, severity, record_count
+FROM stage4_test_label_distribution
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131351_841a6f4b-30ce-41da-a0bb-7a315002e100); Time taken: 0.201 seconds
+INFO  : Executing command(queryId=hive_20260428131351_841a6f4b-30ce-41da-a0bb-7a315002e100): CREATE VIEW stage4_label_distribution_all AS
+SELECT 'Train set' AS dataset_split, severity, record_count
+FROM stage4_train_label_distribution
+UNION ALL
+SELECT 'Test set' AS dataset_split, severity, record_count
+FROM stage4_test_label_distribution
+INFO  : Starting task [Stage-1:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131351_841a6f4b-30ce-41da-a0bb-7a315002e100); Time taken: 0.022 seconds
+INFO  : OK
+No rows affected (0.248 seconds)
+INFO  : Compiling command(queryId=hive_20260428131351_fe3851c6-9640-4154-8ad8-8a0693081338): CREATE VIEW stage4_prediction_distribution_all AS
+SELECT 'Weighted Random Forest' AS model, severity, record_count
+FROM stage4_model1_prediction_distribution
+UNION ALL
+SELECT 'Weighted Multinomial Logistic Regression' AS model, severity, record_count
+FROM stage4_model2_prediction_distribution
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:model, type:string, comment:null), FieldSchema(name:severity, type:string, comment:null), FieldSchema(name:record_count, type:string, comment:null)], properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131351_fe3851c6-9640-4154-8ad8-8a0693081338 : STAGE DEPENDENCIES:
+  Stage-1 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-1
+      Create View Operator:
+        Create View
+          columns: model string, severity string, record_count string
+          expanded text: SELECT 'Weighted Random Forest' AS `model`, `stage4_model1_prediction_distribution`.`severity`, `stage4_model1_prediction_distribution`.`record_count`
+FROM `team3_projectdb`.`stage4_model1_prediction_distribution`
+UNION ALL
+SELECT 'Weighted Multinomial Logistic Regression' AS `model`, `stage4_model2_prediction_distribution`.`severity`, `stage4_model2_prediction_distribution`.`record_count`
+FROM `team3_projectdb`.`stage4_model2_prediction_distribution`
+          name: team3_projectdb.stage4_prediction_distribution_all
+          original text: SELECT 'Weighted Random Forest' AS model, severity, record_count
+FROM stage4_model1_prediction_distribution
+UNION ALL
+SELECT 'Weighted Multinomial Logistic Regression' AS model, severity, record_count
+FROM stage4_model2_prediction_distribution
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131351_fe3851c6-9640-4154-8ad8-8a0693081338); Time taken: 0.199 seconds
+INFO  : Executing command(queryId=hive_20260428131351_fe3851c6-9640-4154-8ad8-8a0693081338): CREATE VIEW stage4_prediction_distribution_all AS
+SELECT 'Weighted Random Forest' AS model, severity, record_count
+FROM stage4_model1_prediction_distribution
+UNION ALL
+SELECT 'Weighted Multinomial Logistic Regression' AS model, severity, record_count
+FROM stage4_model2_prediction_distribution
+INFO  : Starting task [Stage-1:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131351_fe3851c6-9640-4154-8ad8-8a0693081338); Time taken: 0.024 seconds
+INFO  : OK
+No rows affected (0.248 seconds)
+INFO  : Compiling command(queryId=hive_20260428131351_6fe84b1c-ca9e-4698-8a74-7ea93864f168): CREATE VIEW stage4_per_class_metrics_all AS
+SELECT
+'Weighted Random Forest' AS model,
+severity,
+precision_score,
+recall_score,
+f1_score
+FROM stage4_model1_per_class_metrics
+UNION ALL
+SELECT
+'Weighted Multinomial Logistic Regression' AS model,
+severity,
+precision_score,
+recall_score,
+f1_score
+FROM stage4_model2_per_class_metrics
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:model, type:string, comment:null), FieldSchema(name:severity, type:string, comment:null), FieldSchema(name:precision_score, type:string, comment:null), FieldSchema(name:recall_score, type:string, comment:null), FieldSchema(name:f1_score, type:string, comment:null)], properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131351_6fe84b1c-ca9e-4698-8a74-7ea93864f168 : STAGE DEPENDENCIES:
+  Stage-1 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-1
+      Create View Operator:
+        Create View
+          columns: model string, severity string, precision_score string, recall_score string, f1_score string
+          expanded text: SELECT
+'Weighted Random Forest' AS `model`,
+`stage4_model1_per_class_metrics`.`severity`,
+`stage4_model1_per_class_metrics`.`precision_score`,
+`stage4_model1_per_class_metrics`.`recall_score`,
+`stage4_model1_per_class_metrics`.`f1_score`
+FROM `team3_projectdb`.`stage4_model1_per_class_metrics`
+UNION ALL
+SELECT
+'Weighted Multinomial Logistic Regression' AS `model`,
+`stage4_model2_per_class_metrics`.`severity`,
+`stage4_model2_per_class_metrics`.`precision_score`,
+`stage4_model2_per_class_metrics`.`recall_score`,
+`stage4_model2_per_class_metrics`.`f1_score`
+FROM `team3_projectdb`.`stage4_model2_per_class_metrics`
+          name: team3_projectdb.stage4_per_class_metrics_all
+          original text: SELECT
+'Weighted Random Forest' AS model,
+severity,
+precision_score,
+recall_score,
+f1_score
+FROM stage4_model1_per_class_metrics
+UNION ALL
+SELECT
+'Weighted Multinomial Logistic Regression' AS model,
+severity,
+precision_score,
+recall_score,
+f1_score
+FROM stage4_model2_per_class_metrics
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131351_6fe84b1c-ca9e-4698-8a74-7ea93864f168); Time taken: 0.202 seconds
+INFO  : Executing command(queryId=hive_20260428131351_6fe84b1c-ca9e-4698-8a74-7ea93864f168): CREATE VIEW stage4_per_class_metrics_all AS
+SELECT
+'Weighted Random Forest' AS model,
+severity,
+precision_score,
+recall_score,
+f1_score
+FROM stage4_model1_per_class_metrics
+UNION ALL
+SELECT
+'Weighted Multinomial Logistic Regression' AS model,
+severity,
+precision_score,
+recall_score,
+f1_score
+FROM stage4_model2_per_class_metrics
+INFO  : Starting task [Stage-1:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131351_6fe84b1c-ca9e-4698-8a74-7ea93864f168); Time taken: 0.018 seconds
+INFO  : OK
+No rows affected (0.247 seconds)
+INFO  : Compiling command(queryId=hive_20260428131352_d7d6fa86-926a-4d34-a345-def27d6c10cc): CREATE VIEW stage4_confusion_matrix_all AS
+SELECT
+'Weighted Random Forest' AS model,
+true_severity,
+predicted_severity,
+record_count
+FROM stage4_model1_confusion_matrix
+UNION ALL
+SELECT
+'Weighted Multinomial Logistic Regression' AS model,
+true_severity,
+predicted_severity,
+record_count
+FROM stage4_model2_confusion_matrix
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:model, type:string, comment:null), FieldSchema(name:true_severity, type:string, comment:null), FieldSchema(name:predicted_severity, type:string, comment:null), FieldSchema(name:record_count, type:string, comment:null)], properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131352_d7d6fa86-926a-4d34-a345-def27d6c10cc : STAGE DEPENDENCIES:
+  Stage-1 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-1
+      Create View Operator:
+        Create View
+          columns: model string, true_severity string, predicted_severity string, record_count string
+          expanded text: SELECT
+'Weighted Random Forest' AS `model`,
+`stage4_model1_confusion_matrix`.`true_severity`,
+`stage4_model1_confusion_matrix`.`predicted_severity`,
+`stage4_model1_confusion_matrix`.`record_count`
+FROM `team3_projectdb`.`stage4_model1_confusion_matrix`
+UNION ALL
+SELECT
+'Weighted Multinomial Logistic Regression' AS `model`,
+`stage4_model2_confusion_matrix`.`true_severity`,
+`stage4_model2_confusion_matrix`.`predicted_severity`,
+`stage4_model2_confusion_matrix`.`record_count`
+FROM `team3_projectdb`.`stage4_model2_confusion_matrix`
+          name: team3_projectdb.stage4_confusion_matrix_all
+          original text: SELECT
+'Weighted Random Forest' AS model,
+true_severity,
+predicted_severity,
+record_count
+FROM stage4_model1_confusion_matrix
+UNION ALL
+SELECT
+'Weighted Multinomial Logistic Regression' AS model,
+true_severity,
+predicted_severity,
+record_count
+FROM stage4_model2_confusion_matrix
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131352_d7d6fa86-926a-4d34-a345-def27d6c10cc); Time taken: 0.195 seconds
+INFO  : Executing command(queryId=hive_20260428131352_d7d6fa86-926a-4d34-a345-def27d6c10cc): CREATE VIEW stage4_confusion_matrix_all AS
+SELECT
+'Weighted Random Forest' AS model,
+true_severity,
+predicted_severity,
+record_count
+FROM stage4_model1_confusion_matrix
+UNION ALL
+SELECT
+'Weighted Multinomial Logistic Regression' AS model,
+true_severity,
+predicted_severity,
+record_count
+FROM stage4_model2_confusion_matrix
+INFO  : Starting task [Stage-1:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131352_d7d6fa86-926a-4d34-a345-def27d6c10cc); Time taken: 0.016 seconds
+INFO  : OK
+No rows affected (0.236 seconds)
+INFO  : Compiling command(queryId=hive_20260428131352_ca461b80-d18c-49e3-8c92-40425eae96c7): CREATE VIEW stage4_prediction_samples_all AS
+SELECT
+'Weighted Random Forest' AS model,
+true_severity,
+predicted_severity
+FROM stage4_model1_predictions
+UNION ALL
+SELECT
+'Weighted Multinomial Logistic Regression' AS model,
+true_severity,
+predicted_severity
+FROM stage4_model2_predictions
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:model, type:string, comment:null), FieldSchema(name:true_severity, type:string, comment:null), FieldSchema(name:predicted_severity, type:string, comment:null)], properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131352_ca461b80-d18c-49e3-8c92-40425eae96c7 : STAGE DEPENDENCIES:
+  Stage-1 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-1
+      Create View Operator:
+        Create View
+          columns: model string, true_severity string, predicted_severity string
+          expanded text: SELECT
+'Weighted Random Forest' AS `model`,
+`stage4_model1_predictions`.`true_severity`,
+`stage4_model1_predictions`.`predicted_severity`
+FROM `team3_projectdb`.`stage4_model1_predictions`
+UNION ALL
+SELECT
+'Weighted Multinomial Logistic Regression' AS `model`,
+`stage4_model2_predictions`.`true_severity`,
+`stage4_model2_predictions`.`predicted_severity`
+FROM `team3_projectdb`.`stage4_model2_predictions`
+          name: team3_projectdb.stage4_prediction_samples_all
+          original text: SELECT
+'Weighted Random Forest' AS model,
+true_severity,
+predicted_severity
+FROM stage4_model1_predictions
+UNION ALL
+SELECT
+'Weighted Multinomial Logistic Regression' AS model,
+true_severity,
+predicted_severity
+FROM stage4_model2_predictions
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131352_ca461b80-d18c-49e3-8c92-40425eae96c7); Time taken: 0.212 seconds
+INFO  : Executing command(queryId=hive_20260428131352_ca461b80-d18c-49e3-8c92-40425eae96c7): CREATE VIEW stage4_prediction_samples_all AS
+SELECT
+'Weighted Random Forest' AS model,
+true_severity,
+predicted_severity
+FROM stage4_model1_predictions
+UNION ALL
+SELECT
+'Weighted Multinomial Logistic Regression' AS model,
+true_severity,
+predicted_severity
+FROM stage4_model2_predictions
+INFO  : Starting task [Stage-1:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131352_ca461b80-d18c-49e3-8c92-40425eae96c7); Time taken: 0.014 seconds
+INFO  : OK
+No rows affected (0.257 seconds)
+INFO  : Compiling command(queryId=hive_20260428131352_4cf1d4d1-ddb6-466d-902f-9536369f8d98): CREATE VIEW stage4_modeling_summary AS
+SELECT
+model,
+imbalance_strategy,
+accuracy,
+weighted_precision,
+weighted_recall,
+weighted_f1,
+macro_precision,
+macro_recall,
+macro_f1,
+CASE
+WHEN model = 'WeightedMultinomialLogisticRegression'
+THEN 'Best imbalance-aware model. Higher accuracy and F1 than weighted Random Forest.'
+WHEN model = 'WeightedRandomForestClassifier'
+THEN 'Lower overall performance. It overcompensated toward minority classes.'
+ELSE 'Model result'
+END AS conclusion
+FROM stage4_evaluation
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:model, type:string, comment:null), FieldSchema(name:imbalance_strategy, type:string, comment:null), FieldSchema(name:accuracy, type:string, comment:null), FieldSchema(name:weighted_precision, type:string, comment:null), FieldSchema(name:weighted_recall, type:string, comment:null), FieldSchema(name:weighted_f1, type:string, comment:null), FieldSchema(name:macro_precision, type:string, comment:null), FieldSchema(name:macro_recall, type:string, comment:null), FieldSchema(name:macro_f1, type:string, comment:null), FieldSchema(name:conclusion, type:string, comment:null)], properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131352_4cf1d4d1-ddb6-466d-902f-9536369f8d98 : STAGE DEPENDENCIES:
+  Stage-1 is a root stage [DDL]
+
+STAGE PLANS:
+  Stage: Stage-1
+      Create View Operator:
+        Create View
+          columns: model string, imbalance_strategy string, accuracy string, weighted_precision string, weighted_recall string, weighted_f1 string, macro_precision string, macro_recall string, macro_f1 string, conclusion string
+          expanded text: SELECT
+`stage4_evaluation`.`model`,
+`stage4_evaluation`.`imbalance_strategy`,
+`stage4_evaluation`.`accuracy`,
+`stage4_evaluation`.`weighted_precision`,
+`stage4_evaluation`.`weighted_recall`,
+`stage4_evaluation`.`weighted_f1`,
+`stage4_evaluation`.`macro_precision`,
+`stage4_evaluation`.`macro_recall`,
+`stage4_evaluation`.`macro_f1`,
+CASE
+WHEN `stage4_evaluation`.`model` = 'WeightedMultinomialLogisticRegression'
+THEN 'Best imbalance-aware model. Higher accuracy and F1 than weighted Random Forest.'
+WHEN `stage4_evaluation`.`model` = 'WeightedRandomForestClassifier'
+THEN 'Lower overall performance. It overcompensated toward minority classes.'
+ELSE 'Model result'
+END AS `conclusion`
+FROM `team3_projectdb`.`stage4_evaluation`
+          name: team3_projectdb.stage4_modeling_summary
+          original text: SELECT
+model,
+imbalance_strategy,
+accuracy,
+weighted_precision,
+weighted_recall,
+weighted_f1,
+macro_precision,
+macro_recall,
+macro_f1,
+CASE
+WHEN model = 'WeightedMultinomialLogisticRegression'
+THEN 'Best imbalance-aware model. Higher accuracy and F1 than weighted Random Forest.'
+WHEN model = 'WeightedRandomForestClassifier'
+THEN 'Lower overall performance. It overcompensated toward minority classes.'
+ELSE 'Model result'
+END AS conclusion
+FROM stage4_evaluation
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131352_4cf1d4d1-ddb6-466d-902f-9536369f8d98); Time taken: 0.186 seconds
+INFO  : Executing command(queryId=hive_20260428131352_4cf1d4d1-ddb6-466d-902f-9536369f8d98): CREATE VIEW stage4_modeling_summary AS
+SELECT
+model,
+imbalance_strategy,
+accuracy,
+weighted_precision,
+weighted_recall,
+weighted_f1,
+macro_precision,
+macro_recall,
+macro_f1,
+CASE
+WHEN model = 'WeightedMultinomialLogisticRegression'
+THEN 'Best imbalance-aware model. Higher accuracy and F1 than weighted Random Forest.'
+WHEN model = 'WeightedRandomForestClassifier'
+THEN 'Lower overall performance. It overcompensated toward minority classes.'
+ELSE 'Model result'
+END AS conclusion
+FROM stage4_evaluation
+INFO  : Starting task [Stage-1:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131352_4cf1d4d1-ddb6-466d-902f-9536369f8d98); Time taken: 0.028 seconds
+INFO  : OK
+No rows affected (0.244 seconds)
+INFO  : Compiling command(queryId=hive_20260428131353_87670b2e-d408-4303-a226-d244e3725942): SHOW TABLES LIKE 'stage4*'
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:tab_name, type:string, comment:from deserializer)], properties:null)
+INFO  : EXPLAIN output for queryid hive_20260428131353_87670b2e-d408-4303-a226-d244e3725942 : STAGE DEPENDENCIES:
+  Stage-0 is a root stage [DDL]
+  Stage-1 depends on stages: Stage-0 [FETCH]
+
+STAGE PLANS:
+  Stage: Stage-0
+      Show Table Operator:
+        Show Tables
+          database name: team3_projectdb
+          pattern: stage4*
+          result file: file:/tmp/hive/2894e27c-b704-46c4-99ca-1456a13eff5d/hive_2026-04-28_13-13-53_258_2082845211023056441-16311/-local-10000
+
+  Stage: Stage-1
+    Fetch Operator
+      limit: -1
+      Processor Tree:
+        ListSink
+
+
+INFO  : Completed compiling command(queryId=hive_20260428131353_87670b2e-d408-4303-a226-d244e3725942); Time taken: 0.014 seconds
+INFO  : Executing command(queryId=hive_20260428131353_87670b2e-d408-4303-a226-d244e3725942): SHOW TABLES LIKE 'stage4*'
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20260428131353_87670b2e-d408-4303-a226-d244e3725942); Time taken: 0.006 seconds
+INFO  : OK
+20 rows selected (0.065 seconds)
+Closing: 0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10001

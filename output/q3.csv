@@ -1,0 +1,17 @@
+q3_results.season,q3_results.severity,q3_results.accident_count,q3_results.avg_duration_minutes
+Autumn,1,3032,44.39
+Autumn,2,1700293,518.25
+Autumn,3,332526,66.75
+Autumn,4,50825,1831.19
+Spring,1,31130,43.5
+Spring,2,1308232,479.07
+Spring,3,311425,84.5
+Spring,4,49284,1590.74
+Summer,1,32594,64.23
+Summer,2,1262594,368.74
+Summer,3,340053,79.33
+Summer,4,48133,1343.34
+Winter,1,610,67.01
+Winter,2,1885862,538.4
+Winter,3,315333,68.86
+Winter,4,56468,1928.18

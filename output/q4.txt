@@ -1,0 +1,50 @@
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> USE team3_projectdb;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS q4_results;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE TABLE q4_results
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> AS
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     lp.state AS state,
+. . . . . . . . . . . . . . . . . . . . . . .>     lp.city AS city,
+. . . . . . . . . . . . . . . . . . . . . . .>     ap.severity AS severity,
+. . . . . . . . . . . . . . . . . . . . . . .>     COUNT(*) AS accident_count,
+. . . . . . . . . . . . . . . . . . . . . . .>     ROUND(AVG(ap.duration_minutes), 2) AS avg_duration_minutes
+. . . . . . . . . . . . . . . . . . . . . . .> FROM accidents_part ap
+. . . . . . . . . . . . . . . . . . . . . . .> JOIN locations_part lp
+. . . . . . . . . . . . . . . . . . . . . . .>     ON ap.location_id = lp.id
+. . . . . . . . . . . . . . . . . . . . . . .> WHERE lp.state IS NOT NULL
+. . . . . . . . . . . . . . . . . . . . . . .>   AND lp.city IS NOT NULL
+. . . . . . . . . . . . . . . . . . . . . . .> GROUP BY lp.state, lp.city, ap.severity;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT *
+. . . . . . . . . . . . . . . . . . . . . . .> FROM q4_results
+. . . . . . . . . . . . . . . . . . . . . . .> ORDER BY accident_count DESC
+. . . . . . . . . . . . . . . . . . . . . . .> LIMIT 20;
++-------------------+------------------+----------------------+----------------------------+----------------------------------+
+| q4_results.state  | q4_results.city  | q4_results.severity  | q4_results.accident_count  | q4_results.avg_duration_minutes  |
++-------------------+------------------+----------------------+----------------------------+----------------------------------+
+| FL                | Miami            | 2                    | 169789                     | 197.19                           |
+| TX                | Houston          | 2                    | 138301                     | 103.1                            |
+| NC                | Charlotte        | 2                    | 128080                     | 112.27                           |
+| CA                | Los Angeles      | 2                    | 120368                     | 149.43                           |
+| FL                | Orlando          | 2                    | 101833                     | 162.01                           |
+| TX                | Dallas           | 2                    | 95168                      | 97.95                            |
+| TX                | Austin           | 2                    | 86967                      | 99.52                            |
+| NC                | Raleigh          | 2                    | 76469                      | 98.89                            |
+| LA                | Baton Rouge      | 2                    | 63643                      | 4324.18                          |
+| TN                | Nashville        | 2                    | 60503                      | 99.02                            |
+| CA                | Sacramento       | 2                    | 58421                      | 106.76                           |
+| CA                | San Diego        | 2                    | 43257                      | 109.69                           |
+| AZ                | Phoenix          | 2                    | 41515                      | 99.6                             |
+| OK                | Oklahoma City    | 2                    | 40311                      | 62.91                            |
+| MN                | Minneapolis      | 2                    | 38937                      | 111.9                            |
+| CA                | Los Angeles      | 3                    | 34927                      | 57.26                            |
+| VA                | Richmond         | 2                    | 34686                      | 134.45                           |
+| AZ                | Tucson           | 2                    | 34592                      | 111.92                           |
+| GA                | Atlanta          | 2                    | 34156                      | 116.6                            |
+| TX                | Dallas           | 3                    | 33008                      | 77.82                            |
++-------------------+------------------+----------------------+----------------------------+----------------------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 

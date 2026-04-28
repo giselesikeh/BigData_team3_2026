@@ -1,0 +1,59 @@
+Stage 3 Quality Check
+Project root: /home/team3/project/bigdata-accidents-project
+
+1. Checking required Stage 3 files exist
+[OK] stage3.sh
+[OK] scripts/model.py
+[OK] scripts/run_model_yarn.sh
+[OK] scripts/check_stage3_quality.sh
+
+2. Bash syntax check with bash -n
+[OK] bash -n stage3.sh
+[OK] bash -n scripts/run_model_yarn.sh
+[OK] bash -n scripts/check_stage3_quality.sh
+
+3. Pylint availability check
+pylint 2.13.9
+astroid 2.11.7
+Python 3.6.8 (default, Nov 14 2023, 16:29:52) 
+[GCC 4.8.5 20150623 (Red Hat 4.8.5-44)]
+
+4. Running pylint on scripts/model.py
+pylint exit code: 28
+pylint report saved to: output/stage3_pylint.txt
+
+Last 20 lines of pylint report:
+scripts/model.py:757:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+scripts/model.py:758:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+scripts/model.py:759:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+scripts/model.py:760:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+scripts/model.py:761:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+scripts/model.py:762:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+scripts/model.py:763:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+scripts/model.py:764:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+scripts/model.py:765:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+scripts/model.py:766:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+scripts/model.py:767:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+scripts/model.py:768:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+scripts/model.py:769:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+scripts/model.py:770:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+scripts/model.py:771:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+scripts/model.py:500:0: R0915: Too many statements (95/50) (too-many-statements)
+
+-----------------------------------
+Your code has been rated at 6.18/10
+
+
+5. Checking expected Stage 3 outputs exist
+[OK] output/evaluation.csv
+[OK] output/model1_predictions.csv
+[OK] output/model2_predictions.csv
+[OK] output/model1_per_class_metrics.csv
+[OK] output/model2_per_class_metrics.csv
+[OK] output/model1_confusion_matrix.csv
+[OK] output/model2_confusion_matrix.csv
+[OK] output/train_label_distribution.csv
+[OK] output/test_label_distribution.csv
+
+Stage 3 quality check completed.
+Quality report saved to: output/stage3_quality_check.txtO

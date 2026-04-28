@@ -1,0 +1,3 @@
+label,format,total_import_seconds,total_hdfs_size_bytes
+parquet_snappy,parquet,197,1003549502
+avro_snappy,avro,222,1227235121

@@ -1,0 +1,138 @@
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> USE team3_projectdb;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS stage4_dataset_counts;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS stage4_project_summary;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS stage4_feature_engineering_summary;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE TABLE stage4_dataset_counts AS
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT 'accidents_part' AS table_name, COUNT(*) AS record_count
+. . . . . . . . . . . . . . . . . . . . . . .> FROM accidents_part
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT 'locations_part' AS table_name, COUNT(*) AS record_count
+. . . . . . . . . . . . . . . . . . . . . . .> FROM locations_part
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT 'weather_buck' AS table_name, COUNT(*) AS record_count
+. . . . . . . . . . . . . . . . . . . . . . .> FROM weather_buck
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT 'twilight_buck' AS table_name, COUNT(*) AS record_count
+. . . . . . . . . . . . . . . . . . . . . . .> FROM twilight_buck
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT 'road_features_buck' AS table_name, COUNT(*) AS record_count
+. . . . . . . . . . . . . . . . . . . . . . .> FROM road_features_buck
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT 'stage4_evaluation' AS table_name, COUNT(*) AS record_count
+. . . . . . . . . . . . . . . . . . . . . . .> FROM stage4_evaluation
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT 'stage4_model1_predictions' AS table_name, COUNT(*) AS record_count
+. . . . . . . . . . . . . . . . . . . . . . .> FROM stage4_model1_predictions
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT 'stage4_model2_predictions' AS table_name, COUNT(*) AS record_count
+. . . . . . . . . . . . . . . . . . . . . . .> FROM stage4_model2_predictions;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE TABLE stage4_project_summary AS
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Project title' AS item,
+. . . . . . . . . . . . . . . . . . . . . . .>     'US Accident Severity Analytics and Prediction' AS description
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Business objective' AS item,
+. . . . . . . . . . . . . . . . . . . . . . .>     'Predict accident severity and identify conditions associated with higher accident ris k.' AS description
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Dataset' AS item,
+. . . . . . . . . . . . . . . . . . . . . . .>     'US Accidents dataset from Kaggle, containing traffic accident records from 2016 to 20 23.' AS description
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Target column' AS item,
+. . . . . . . . . . . . . . . . . . . . . . .>     'severity' AS description
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'ML task' AS item,
+. . . . . . . . . . . . . . . . . . . . . . .>     'Multiclass classification with severity labels 1, 2, 3, and 4.' AS description
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Selected storage format' AS item,
+. . . . . . . . . . . . . . . . . . . . . . .>     'Parquet with Snappy compression, selected after Stage 1 benchmarking.' AS description 
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Best overall model' AS item,
+. . . . . . . . . . . . . . . . . . . . . . .>     'Unweighted Multinomial Logistic Regression from the baseline run.' AS description
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Best imbalance-aware model' AS item,
+. . . . . . . . . . . . . . . . . . . . . . .>     'Weighted Multinomial Logistic Regression using inverse-frequency class weights.' AS d escription;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE TABLE stage4_feature_engineering_summary AS
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Temporal features' AS feature_group,
+. . . . . . . . . . . . . . . . . . . . . . .>     'Extracted year, month, day, day of week, hour, minute, and second from start_time. Cy clical sine/cosine encoding was applied.' AS description
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Geospatial features' AS feature_group,
+. . . . . . . . . . . . . . . . . . . . . . .>     'Latitude and longitude were transformed into ECEF coordinates: ecef_x, ecef_y, and ec ef_z.' AS description
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Weather features' AS feature_group,
+. . . . . . . . . . . . . . . . . . . . . . .>     'Temperature, wind chill, humidity, pressure, visibility, wind speed, precipitation, w ind direction, and weather condition were included.' AS description
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Road context features' AS feature_group,
+. . . . . . . . . . . . . . . . . . . . . . .>     'Road indicators such as crossing, junction, railway, stop, traffic signal, bump, amen ity, and roundabout were included.' AS description
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Categorical processing' AS feature_group,
+. . . . . . . . . . . . . . . . . . . . . . .>     'StringIndexer and OneHotEncoder were used for categorical fields with invalid values  kept safely.' AS description
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Missing values' AS feature_group,
+. . . . . . . . . . . . . . . . . . . . . . .>     'Categorical missing values were filled with unknown values, and numeric missing value s were handled using median imputation.' AS description
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Scaling' AS feature_group,
+. . . . . . . . . . . . . . . . . . . . . . .>     'Numeric and encoded features were assembled and scaled using StandardScaler.' AS desc ription
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Class imbalance' AS feature_group,
+. . . . . . . . . . . . . . . . . . . . . . .>     'Inverse-frequency class weights were computed from the training set and applied fairl y to both weighted models.' AS description;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT * FROM stage4_dataset_counts;
++-----------------------------------+-------------------------------------+
+| stage4_dataset_counts.table_name  | stage4_dataset_counts.record_count  |
++-----------------------------------+-------------------------------------+
+| accidents_part                    | 7728394                             |
+| locations_part                    | 3803966                             |
+| weather_buck                      | 4369540                             |
+| twilight_buck                     | 11                                  |
+| road_features_buck                | 344                                 |
+| stage4_evaluation                 | 2                                   |
+| stage4_model1_predictions         | 1546767                             |
+| stage4_model2_predictions         | 1546767                             |
++-----------------------------------+-------------------------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT * FROM stage4_project_summary;
++------------------------------+----------------------------------------------------+
+| stage4_project_summary.item  |         stage4_project_summary.description         |
++------------------------------+----------------------------------------------------+
+| Project title                | US Accident Severity Analytics and Prediction      |
+| Business objective           | Predict accident severity and identify conditions associated with higher accident risk. |
+| Dataset                      | US Accidents dataset from Kaggle, containing traffic accident records from 2016 to 2023. |
+| Target column                | severity                                           |
+| ML task                      | Multiclass classification with severity labels 1, 2, 3, and 4. |
+| Selected storage format      | Parquet with Snappy compression, selected after Stage 1 benchmarking. |
+| Best overall model           | Unweighted Multinomial Logistic Regression from the baseline run. |
+| Best imbalance-aware model   | Weighted Multinomial Logistic Regression using inverse-frequency class weights. |
++------------------------------+----------------------------------------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT * FROM stage4_feature_engineering_summary;
++---------------------------------------------------+----------------------------------------------------+
+| stage4_feature_engineering_summary.feature_group  |   stage4_feature_engineering_summary.description   |
++---------------------------------------------------+----------------------------------------------------+
+| Temporal features                                 | Extracted year, month, day, day of week, hour, minute, and second from start_time. Cyclical sine/cosine encoding was applied. |
+| Geospatial features                               | Latitude and longitude were transformed into ECEF coordinates: ecef_x, ecef_y, and ecef_z. |
+| Weather features                                  | Temperature, wind chill, humidity, pressure, visibility, wind speed, precipitation, wind direction, and weather condition were included. |
+| Road context features                             | Road indicators such as crossing, junction, railway, stop, traffic signal, bump, amenity, and roundabout were included. |
+| Categorical processing                            | StringIndexer and OneHotEncoder were used for categorical fields with invalid values kept safely. |
+| Missing values                                    | Categorical missing values were filled with unknown values, and numeric missing values were handled using median imputation. |
+| Scaling                                           | Numeric and encoded features were assembled and scaled using StandardScaler. |
+| Class imbalance                                   | Inverse-frequency class weights were computed from the training set and applied fairly to both weighted models. |
++---------------------------------------------------+----------------------------------------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 

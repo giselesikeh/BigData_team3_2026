@@ -1,0 +1,283 @@
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> USE team3_projectdb;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP VIEW IF EXISTS stage4_label_distribution_all;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP VIEW IF EXISTS stage4_prediction_distribution_all;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP VIEW IF EXISTS stage4_per_class_metrics_all;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP VIEW IF EXISTS stage4_confusion_matrix_all;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP VIEW IF EXISTS stage4_prediction_samples_all;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP VIEW IF EXISTS stage4_modeling_summary;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS stage4_evaluation;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS stage4_train_label_distribution;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS stage4_test_label_distribution;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS stage4_model1_prediction_distribution;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS stage4_model2_prediction_distribution;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS stage4_model1_per_class_metrics;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS stage4_model2_per_class_metrics;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS stage4_model1_confusion_matrix;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS stage4_model2_confusion_matrix;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS stage4_model1_predictions;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS stage4_model2_predictions;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE stage4_evaluation (
+. . . . . . . . . . . . . . . . . . . . . . .>     model STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     imbalance_strategy STRING,
+. . . . . . . . . . . . . . . . . . . . . . .>     accuracy DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     weighted_precision DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     weighted_recall DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     weighted_f1 DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     macro_precision DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     macro_recall DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     macro_f1 DOUBLE
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+. . . . . . . . . . . . . . . . . . . . . . .> WITH SERDEPROPERTIES (
+. . . . . . . . . . . . . . . . . . . . . . .>     "separatorChar" = ",",
+. . . . . . . . . . . . . . . . . . . . . . .>     "quoteChar" = "\""
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS TEXTFILE
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION '/user/team3/project/output/evaluation'
+. . . . . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES ("skip.header.line.count"="1");
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE stage4_train_label_distribution (
+. . . . . . . . . . . . . . . . . . . . . . .>     severity INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     record_count BIGINT
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+. . . . . . . . . . . . . . . . . . . . . . .> WITH SERDEPROPERTIES (
+. . . . . . . . . . . . . . . . . . . . . . .>     "separatorChar" = ",",
+. . . . . . . . . . . . . . . . . . . . . . .>     "quoteChar" = "\""
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS TEXTFILE
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION '/user/team3/project/output/train_label_distribution'
+. . . . . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES ("skip.header.line.count"="1");
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE stage4_test_label_distribution (
+. . . . . . . . . . . . . . . . . . . . . . .>     severity INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     record_count BIGINT
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+. . . . . . . . . . . . . . . . . . . . . . .> WITH SERDEPROPERTIES (
+. . . . . . . . . . . . . . . . . . . . . . .>     "separatorChar" = ",",
+. . . . . . . . . . . . . . . . . . . . . . .>     "quoteChar" = "\""
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS TEXTFILE
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION '/user/team3/project/output/test_label_distribution'
+. . . . . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES ("skip.header.line.count"="1");
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE stage4_model1_prediction_distribution (
+. . . . . . . . . . . . . . . . . . . . . . .>     severity INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     record_count BIGINT
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+. . . . . . . . . . . . . . . . . . . . . . .> WITH SERDEPROPERTIES (
+. . . . . . . . . . . . . . . . . . . . . . .>     "separatorChar" = ",",
+. . . . . . . . . . . . . . . . . . . . . . .>     "quoteChar" = "\""
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS TEXTFILE
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION '/user/team3/project/output/model1_prediction_distribution'
+. . . . . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES ("skip.header.line.count"="1");
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE stage4_model2_prediction_distribution (
+. . . . . . . . . . . . . . . . . . . . . . .>     severity INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     record_count BIGINT
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+. . . . . . . . . . . . . . . . . . . . . . .> WITH SERDEPROPERTIES (
+. . . . . . . . . . . . . . . . . . . . . . .>     "separatorChar" = ",",
+. . . . . . . . . . . . . . . . . . . . . . .>     "quoteChar" = "\""
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS TEXTFILE
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION '/user/team3/project/output/model2_prediction_distribution'
+. . . . . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES ("skip.header.line.count"="1");
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE stage4_model1_per_class_metrics (
+. . . . . . . . . . . . . . . . . . . . . . .>     severity INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     precision_score DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     recall_score DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     f1_score DOUBLE
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+. . . . . . . . . . . . . . . . . . . . . . .> WITH SERDEPROPERTIES (
+. . . . . . . . . . . . . . . . . . . . . . .>     "separatorChar" = ",",
+. . . . . . . . . . . . . . . . . . . . . . .>     "quoteChar" = "\""
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS TEXTFILE
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION '/user/team3/project/output/model1_per_class_metrics'
+. . . . . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES ("skip.header.line.count"="1");
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE stage4_model2_per_class_metrics (
+. . . . . . . . . . . . . . . . . . . . . . .>     severity INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     precision_score DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     recall_score DOUBLE,
+. . . . . . . . . . . . . . . . . . . . . . .>     f1_score DOUBLE
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+. . . . . . . . . . . . . . . . . . . . . . .> WITH SERDEPROPERTIES (
+. . . . . . . . . . . . . . . . . . . . . . .>     "separatorChar" = ",",
+. . . . . . . . . . . . . . . . . . . . . . .>     "quoteChar" = "\""
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS TEXTFILE
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION '/user/team3/project/output/model2_per_class_metrics'
+. . . . . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES ("skip.header.line.count"="1");
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE stage4_model1_confusion_matrix (
+. . . . . . . . . . . . . . . . . . . . . . .>     true_severity INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     predicted_severity INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     record_count BIGINT
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+. . . . . . . . . . . . . . . . . . . . . . .> WITH SERDEPROPERTIES (
+. . . . . . . . . . . . . . . . . . . . . . .>     "separatorChar" = ",",
+. . . . . . . . . . . . . . . . . . . . . . .>     "quoteChar" = "\""
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS TEXTFILE
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION '/user/team3/project/output/model1_confusion_matrix'
+. . . . . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES ("skip.header.line.count"="1");
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE stage4_model2_confusion_matrix (
+. . . . . . . . . . . . . . . . . . . . . . .>     true_severity INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     predicted_severity INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     record_count BIGINT
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+. . . . . . . . . . . . . . . . . . . . . . .> WITH SERDEPROPERTIES (
+. . . . . . . . . . . . . . . . . . . . . . .>     "separatorChar" = ",",
+. . . . . . . . . . . . . . . . . . . . . . .>     "quoteChar" = "\""
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS TEXTFILE
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION '/user/team3/project/output/model2_confusion_matrix'
+. . . . . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES ("skip.header.line.count"="1");
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE stage4_model1_predictions (
+. . . . . . . . . . . . . . . . . . . . . . .>     true_severity INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     predicted_severity INT
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+. . . . . . . . . . . . . . . . . . . . . . .> WITH SERDEPROPERTIES (
+. . . . . . . . . . . . . . . . . . . . . . .>     "separatorChar" = ",",
+. . . . . . . . . . . . . . . . . . . . . . .>     "quoteChar" = "\""
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS TEXTFILE
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION '/user/team3/project/output/model1_predictions'
+. . . . . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES ("skip.header.line.count"="1");
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE stage4_model2_predictions (
+. . . . . . . . . . . . . . . . . . . . . . .>     true_severity INT,
+. . . . . . . . . . . . . . . . . . . . . . .>     predicted_severity INT
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+. . . . . . . . . . . . . . . . . . . . . . .> WITH SERDEPROPERTIES (
+. . . . . . . . . . . . . . . . . . . . . . .>     "separatorChar" = ",",
+. . . . . . . . . . . . . . . . . . . . . . .>     "quoteChar" = "\""
+. . . . . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS TEXTFILE
+. . . . . . . . . . . . . . . . . . . . . . .> LOCATION '/user/team3/project/output/model2_predictions'
+. . . . . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES ("skip.header.line.count"="1");
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE VIEW stage4_label_distribution_all AS
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT 'Train set' AS dataset_split, severity, record_count
+. . . . . . . . . . . . . . . . . . . . . . .> FROM stage4_train_label_distribution
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT 'Test set' AS dataset_split, severity, record_count
+. . . . . . . . . . . . . . . . . . . . . . .> FROM stage4_test_label_distribution;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE VIEW stage4_prediction_distribution_all AS
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT 'Weighted Random Forest' AS model, severity, record_count
+. . . . . . . . . . . . . . . . . . . . . . .> FROM stage4_model1_prediction_distribution
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT 'Weighted Multinomial Logistic Regression' AS model, severity, record_count
+. . . . . . . . . . . . . . . . . . . . . . .> FROM stage4_model2_prediction_distribution;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE VIEW stage4_per_class_metrics_all AS
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Weighted Random Forest' AS model,
+. . . . . . . . . . . . . . . . . . . . . . .>     severity,
+. . . . . . . . . . . . . . . . . . . . . . .>     precision_score,
+. . . . . . . . . . . . . . . . . . . . . . .>     recall_score,
+. . . . . . . . . . . . . . . . . . . . . . .>     f1_score
+. . . . . . . . . . . . . . . . . . . . . . .> FROM stage4_model1_per_class_metrics
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Weighted Multinomial Logistic Regression' AS model,
+. . . . . . . . . . . . . . . . . . . . . . .>     severity,
+. . . . . . . . . . . . . . . . . . . . . . .>     precision_score,
+. . . . . . . . . . . . . . . . . . . . . . .>     recall_score,
+. . . . . . . . . . . . . . . . . . . . . . .>     f1_score
+. . . . . . . . . . . . . . . . . . . . . . .> FROM stage4_model2_per_class_metrics;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE VIEW stage4_confusion_matrix_all AS
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Weighted Random Forest' AS model,
+. . . . . . . . . . . . . . . . . . . . . . .>     true_severity,
+. . . . . . . . . . . . . . . . . . . . . . .>     predicted_severity,
+. . . . . . . . . . . . . . . . . . . . . . .>     record_count
+. . . . . . . . . . . . . . . . . . . . . . .> FROM stage4_model1_confusion_matrix
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Weighted Multinomial Logistic Regression' AS model,
+. . . . . . . . . . . . . . . . . . . . . . .>     true_severity,
+. . . . . . . . . . . . . . . . . . . . . . .>     predicted_severity,
+. . . . . . . . . . . . . . . . . . . . . . .>     record_count
+. . . . . . . . . . . . . . . . . . . . . . .> FROM stage4_model2_confusion_matrix;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE VIEW stage4_prediction_samples_all AS
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Weighted Random Forest' AS model,
+. . . . . . . . . . . . . . . . . . . . . . .>     true_severity,
+. . . . . . . . . . . . . . . . . . . . . . .>     predicted_severity
+. . . . . . . . . . . . . . . . . . . . . . .> FROM stage4_model1_predictions
+. . . . . . . . . . . . . . . . . . . . . . .> UNION ALL
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     'Weighted Multinomial Logistic Regression' AS model,
+. . . . . . . . . . . . . . . . . . . . . . .>     true_severity,
+. . . . . . . . . . . . . . . . . . . . . . .>     predicted_severity
+. . . . . . . . . . . . . . . . . . . . . . .> FROM stage4_model2_predictions;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE VIEW stage4_modeling_summary AS
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     model,
+. . . . . . . . . . . . . . . . . . . . . . .>     imbalance_strategy,
+. . . . . . . . . . . . . . . . . . . . . . .>     accuracy,
+. . . . . . . . . . . . . . . . . . . . . . .>     weighted_precision,
+. . . . . . . . . . . . . . . . . . . . . . .>     weighted_recall,
+. . . . . . . . . . . . . . . . . . . . . . .>     weighted_f1,
+. . . . . . . . . . . . . . . . . . . . . . .>     macro_precision,
+. . . . . . . . . . . . . . . . . . . . . . .>     macro_recall,
+. . . . . . . . . . . . . . . . . . . . . . .>     macro_f1,
+. . . . . . . . . . . . . . . . . . . . . . .>     CASE
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN model = 'WeightedMultinomialLogisticRegression'
+. . . . . . . . . . . . . . . . . . . . . . .>         THEN 'Best imbalance-aware model. Higher accuracy and F1 than weighted Random Fore st.'
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN model = 'WeightedRandomForestClassifier'
+. . . . . . . . . . . . . . . . . . . . . . .>         THEN 'Lower overall performance. It overcompensated toward minority classes.'
+. . . . . . . . . . . . . . . . . . . . . . .>         ELSE 'Model result'
+. . . . . . . . . . . . . . . . . . . . . . .>     END AS conclusion
+. . . . . . . . . . . . . . . . . . . . . . .> FROM stage4_evaluation;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SHOW TABLES LIKE 'stage4*';
++----------------------------------------+
+|                tab_name                |
++----------------------------------------+
+| stage4_confusion_matrix_all            |
+| stage4_dataset_counts                  |
+| stage4_evaluation                      |
+| stage4_feature_engineering_summary     |
+| stage4_label_distribution_all          |
+| stage4_model1_confusion_matrix         |
+| stage4_model1_per_class_metrics        |
+| stage4_model1_prediction_distribution  |
+| stage4_model1_predictions              |
+| stage4_model2_confusion_matrix         |
+| stage4_model2_per_class_metrics        |
+| stage4_model2_prediction_distribution  |
+| stage4_model2_predictions              |
+| stage4_modeling_summary                |
+| stage4_per_class_metrics_all           |
+| stage4_prediction_distribution_all     |
+| stage4_prediction_samples_all          |
+| stage4_project_summary                 |
+| stage4_test_label_distribution         |
+| stage4_train_label_distribution        |
++----------------------------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 

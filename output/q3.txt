@@ -1,0 +1,56 @@
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> USE team3_projectdb;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS q3_results;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE TABLE q3_results
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS PARQUET
+. . . . . . . . . . . . . . . . . . . . . . .> AS
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . . . . . . . . .>     CASE
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN ap.start_month IN (12, 1, 2) THEN 'Winter'
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN ap.start_month IN (3, 4, 5) THEN 'Spring'
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN ap.start_month IN (6, 7, 8) THEN 'Summer'
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN ap.start_month IN (9, 10, 11) THEN 'Autumn'
+. . . . . . . . . . . . . . . . . . . . . . .>         ELSE 'Unknown'
+. . . . . . . . . . . . . . . . . . . . . . .>     END AS season,
+. . . . . . . . . . . . . . . . . . . . . . .>     ap.severity AS severity,
+. . . . . . . . . . . . . . . . . . . . . . .>     COUNT(*) AS accident_count,
+. . . . . . . . . . . . . . . . . . . . . . .>     ROUND(AVG(ap.duration_minutes), 2) AS avg_duration_minutes
+. . . . . . . . . . . . . . . . . . . . . . .> FROM accidents_part ap
+. . . . . . . . . . . . . . . . . . . . . . .> WHERE ap.start_month IS NOT NULL
+. . . . . . . . . . . . . . . . . . . . . . .> GROUP BY
+. . . . . . . . . . . . . . . . . . . . . . .>     CASE
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN ap.start_month IN (12, 1, 2) THEN 'Winter'
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN ap.start_month IN (3, 4, 5) THEN 'Spring'
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN ap.start_month IN (6, 7, 8) THEN 'Summer'
+. . . . . . . . . . . . . . . . . . . . . . .>         WHEN ap.start_month IN (9, 10, 11) THEN 'Autumn'
+. . . . . . . . . . . . . . . . . . . . . . .>         ELSE 'Unknown'
+. . . . . . . . . . . . . . . . . . . . . . .>     END,
+. . . . . . . . . . . . . . . . . . . . . . .>     ap.severity;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT *
+. . . . . . . . . . . . . . . . . . . . . . .> FROM q3_results
+. . . . . . . . . . . . . . . . . . . . . . .> ORDER BY accident_count DESC
+. . . . . . . . . . . . . . . . . . . . . . .> LIMIT 20;
++--------------------+----------------------+----------------------------+----------------------------------+
+| q3_results.season  | q3_results.severity  | q3_results.accident_count  | q3_results.avg_duration_minutes  |
++--------------------+----------------------+----------------------------+----------------------------------+
+| Winter             | 2                    | 1885862                    | 538.4                            |
+| Autumn             | 2                    | 1700293                    | 518.25                           |
+| Spring             | 2                    | 1308232                    | 479.07                           |
+| Summer             | 2                    | 1262594                    | 368.74                           |
+| Summer             | 3                    | 340053                     | 79.33                            |
+| Autumn             | 3                    | 332526                     | 66.75                            |
+| Winter             | 3                    | 315333                     | 68.86                            |
+| Spring             | 3                    | 311425                     | 84.5                             |
+| Winter             | 4                    | 56468                      | 1928.18                          |
+| Autumn             | 4                    | 50825                      | 1831.19                          |
+| Spring             | 4                    | 49284                      | 1590.74                          |
+| Summer             | 4                    | 48133                      | 1343.34                          |
+| Summer             | 1                    | 32594                      | 64.23                            |
+| Spring             | 1                    | 31130                      | 43.5                             |
+| Autumn             | 1                    | 3032                       | 44.39                            |
+| Winter             | 1                    | 610                        | 67.01                            |
++--------------------+----------------------+----------------------------+----------------------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 

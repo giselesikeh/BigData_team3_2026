@@ -1,0 +1,11 @@
+label,format,table,read_seconds,status,error
+parquet_snappy,parquet,accidents,3,OK,
+parquet_snappy,parquet,locations,2,OK,
+parquet_snappy,parquet,road_features,2,OK,
+parquet_snappy,parquet,twilight,1,OK,
+parquet_snappy,parquet,weather,3,OK,
+avro_snappy,avro,accidents,3,OK,
+avro_snappy,avro,locations,2,OK,
+avro_snappy,avro,road_features,2,OK,
+avro_snappy,avro,twilight,2,OK,
+avro_snappy,avro,weather,3,OK,

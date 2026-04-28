@@ -1,0 +1,5 @@
+q5_results.traffic_signal_status,q5_results.junction_status,q5_results.accident_count,q5_results.avg_severity,q5_results.avg_duration_minutes
+No Signal,Junction,562014,2.3,838.8
+No Signal,Not Junction,6022608,2.23,463.46
+Signal Present,Junction,9328,2.34,179.27
+Signal Present,Not Junction,1134444,2.09,150.12
