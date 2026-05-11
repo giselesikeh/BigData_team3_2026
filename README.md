@@ -1,10 +1,71 @@
-# BigData_team3_2026: Codebase Documentation
+# US Accident Severity Analytics and Prediction
 
-This document provides a detailed overview of the directory structure and file purposes within the **BigData_team3_2026** project. The project implements a complete data-processing pipeline from data collection to analysis, predictive modeling, and dashboard delivery, designed to run on the **CentOS 7.9.2009** Linux distribution used on the IU cluster.
+## Big Data Technologies and Analytics — Final Project
+
+This repository contains the implementation of an end-to-end big data analytics pipeline for analyzing and predicting road accident severity using the **U.S. Accidents March 2023 dataset**.
+
+The project follows the **CRISP-DM methodology** and combines data collection, storage, ingestion, exploratory data analysis, distributed machine learning, and dashboard deployment. The pipeline is designed to run on the **CentOS 7.9.2009** Linux distribution used on the IU Hadoop cluster.
 
 ---
 
-## Repository Structure Overview
+## Project Overview
+
+Road accidents create major public-safety, transportation, and economic challenges. This project uses large-scale historical accident data to help transportation stakeholders understand where and under what conditions more severe accidents occur.
+
+The main objective is to build a reproducible big data pipeline that supports:
+
+1. Data collection and storage
+2. Distributed ingestion into HDFS
+3. Hive-based exploratory data analysis
+4. Spark ML accident severity prediction
+5. Apache Superset dashboard presentation
+
+---
+
+## Dataset
+
+The project uses the **U.S. Accidents March 2023** dataset from Kaggle.
+
+The dataset contains:
+
+- More than 7.7 million accident records
+- 46 original columns
+- Temporal features
+- Geospatial features
+- Weather features
+- Road-environment indicators
+- Accident severity labels from 1 to 4
+
+The prediction target is **accident severity**.
+
+---
+
+## Business Problem
+
+Transportation authorities usually have limited budgets, limited staff, and limited time. They cannot improve every road segment or monitor every accident-prone area equally.
+
+The business problem is to transform large-scale accident data into useful insights and predictive outputs that can support better road-safety planning and intervention prioritization.
+
+The project focuses on identifying conditions associated with higher accident severity and presenting the results in a clear dashboard for stakeholders.
+
+---
+
+## Technologies Used
+
+- Python
+- Bash
+- PostgreSQL
+- Apache Sqoop
+- HDFS
+- Apache Hive
+- Apache Spark ML
+- Apache Superset
+- Git and GitHub
+- LaTeX / Overleaf
+
+---
+
+## Repository Structure
 
 ```text
 BigData_team3_2026/
@@ -23,288 +84,456 @@ BigData_team3_2026/
 ├── requirements.txt
 ├── README.md
 └── .gitignore
-Folder and File Descriptions
-1. data/ Folder
+```
 
-Purpose: This directory serves as the primary storage for both raw input data and intermediate data generated during the pipeline’s execution.
+---
 
-Contents:
+## Folder and File Descriptions
 
-US_Accidents_March23.csv
-This is the main raw dataset for the project. It is downloaded from Kaggle as the initial step of the pipeline during Stage 1.
-train.json and test.json
-These JSON files store the preprocessed Spark ML datasets generated in Stage 3 after the feature-engineering and train-test split steps. Saving these files allows the prepared data to be preserved for inspection and reuse without repeating the full preprocessing workflow.
-2. logs/ Folder
+### `data/`
 
-Purpose: This directory stores log files generated during the execution of the various project scripts.
+This folder stores raw input data and intermediate data generated during the pipeline execution.
 
-Contents:
-Log files primarily capture standard output, error messages, Beeline execution details, and Spark run logs. These logs are crucial for:
+Main files include:
 
-debugging pipeline failures,
-monitoring progress of long-running jobs,
-checking whether a stage completed successfully,
-and auditing execution on the cluster.
+- `US_Accidents_March23.csv` — main raw dataset downloaded from Kaggle during Stage 1.
+- `train.json` — preprocessed Spark ML training dataset generated in Stage 3.
+- `test.json` — preprocessed Spark ML test dataset generated in Stage 3.
 
-Typical examples include:
+---
 
-Hive table creation error logs,
-EDA query error logs,
-Spark model run logs.
-3. models/ Folder
+### `logs/`
 
-Purpose: This directory is dedicated to storing trained machine-learning models.
+This folder stores log files generated during the execution of the project scripts.
 
-Contents:
-Serialized Spark ML model artifacts produced in Stage 3.
+The logs are used for:
 
-model1/
-Stores the first trained model artifact.
-model2/
-Stores the second trained model artifact.
+- debugging pipeline failures;
+- monitoring long-running jobs;
+- checking whether each stage completed successfully;
+- auditing execution on the cluster.
 
-In the final project version:
+Typical logs include Hive table creation logs, EDA query logs, and Spark model execution logs.
 
-model1 corresponds to the weighted Random Forest Classifier,
-model2 corresponds to the weighted Multinomial Logistic Regression model.
+---
 
-These saved models allow later reuse, comparison, and inspection without retraining.
+### `models/`
 
-4. output/ Folder
+This folder stores trained Spark ML model artifacts produced in Stage 3.
 
-Purpose: This directory acts as the main repository for outputs generated throughout the pipeline, including analytical query results, model predictions, benchmark files, evaluation files, and Stage 4 dashboard-support artifacts.
+Main model folders:
 
-Contents:
+- `model1/` — weighted Random Forest Classifier.
+- `model2/` — weighted Multinomial Logistic Regression.
 
-Stage 1 Outputs
+The saved models allow reuse, comparison, and inspection without retraining.
 
-These include the benchmark results related to storage format selection and HDFS read performance, such as:
+---
 
-storage import benchmark files,
-read benchmark files,
-and other Stage 1 pipeline outputs.
-Stage 2 Outputs
-q1.csv - q5.csv
-These CSV files contain the results of the analytical insights generated from Hive. Each file corresponds to one HiveQL query stored in the sql/ folder.
-q1.txt - q5.txt
-These text files contain terminal-style outputs of the same Hive queries.
-q1.jpg - q5.jpg
-These image files are exported Apache Superset charts corresponding to the Stage 2 EDA insights.
-hive_results.txt
-Contains output from the Hive table creation and validation steps.
-stage2_quality_check.txt
-Contains the results of the Stage 2 quality-check script.
-stage2_tables.txt
-Contains the list of Hive tables created and used during Stage 2.
-Stage 3 Outputs
-model1_predictions.csv
-model2_predictions.csv
-These files store the predictions produced by the trained Spark ML models on the test dataset.
-evaluation.csv
-Stores the final comparison metrics for the candidate models.
-model1_per_class_metrics.csv
-model2_per_class_metrics.csv
-Store precision, recall, and F1 values for each severity class.
-model1_confusion_matrix.csv
-model2_confusion_matrix.csv
-Store confusion-matrix counts for both models.
-train_label_distribution.csv
-test_label_distribution.csv
-Store the class distribution in the train and test datasets.
-model1_prediction_distribution.csv
-model2_prediction_distribution.csv
-Store the prediction count distribution for each model.
-stage3_quality_check.txt
-Contains the results of the Stage 3 quality-check script.
-Stage 4 Outputs
-stage4_tables.txt
-Output related to creation and validation of dashboard-ready Hive tables.
-stage4_data_description.txt
-Output containing the data-description summary tables prepared for the dashboard.
-stage4_hive_table_list.txt
-Stores the list of Stage 4 Hive tables and views created for Apache Superset delivery.
+### `output/`
 
-Overall, the output/ folder is the main local destination for the final reproducible artifacts of the project.
+This folder stores the main outputs generated throughout the pipeline, including benchmark files, EDA results, model predictions, evaluation files, and dashboard-support artifacts.
 
-5. scripts/ Folder
+#### Stage 1 Outputs
 
-Purpose: This central directory houses the Bash and Python scripts that automate and execute the various parts of the pipeline.
+Stage 1 outputs include benchmark results related to storage format selection and HDFS read performance.
 
-Contents:
+Examples include:
 
-build_hive_tables.sh
-A Bash script responsible for creating the main Hive tables used in Stage 2. It executes the HiveQL in sql/db.hql.
-run_stage2_eda.sh
-A Bash script that automates the Stage 2 EDA workflow. It executes the Stage 2 HiveQL query files, stores the results in Hive result tables, and exports them to the output/ folder.
-model.py
-The main Python script for the Spark ML pipeline in Stage 3. It:
-reads the prepared Hive tables,
-joins them into a modeling dataframe,
-performs preprocessing and feature engineering,
-creates training and test sets,
-trains and evaluates two Spark ML classifiers,
-saves the trained models,
-and exports predictions and evaluation outputs.
-run_model_yarn.sh
-A Bash wrapper used to run model.py on Spark YARN with the required environment settings for the cluster.
-prepare_stage4_tables.sh
-A Bash script for Stage 4. It creates dashboard-ready Hive tables and views from the outputs of earlier stages.
-check_stage2_quality.sh
-Checks Stage 2 scripts, required files, Bash syntax, and expected outputs.
-check_stage3_quality.sh
-Checks Stage 3 scripts, required files, Bash syntax, Python linting, and expected outputs.
-check_stage4_quality.sh
-Checks Stage 4 scripts, required files, and dashboard-support outputs.
+- storage import benchmark files;
+- read benchmark files;
+- Stage 1 pipeline output files.
 
-This folder contains the core execution logic behind the stage wrappers.
+#### Stage 2 Outputs
 
-6. sql/ Folder
+Stage 2 outputs include EDA query results and Superset chart exports.
 
-Purpose: Contains HiveQL scripts used for Hive warehouse creation, analytical query execution, and dashboard-table preparation.
+Main files include:
 
-Contents:
+- `q1.csv` to `q5.csv` — CSV outputs for the five Hive EDA queries.
+- `q1.txt` to `q5.txt` — terminal-style outputs of the same Hive queries.
+- `q1.jpg` to `q5.jpg` — Apache Superset chart images for the EDA insights.
+- `hive_results.txt` — output from Hive table creation and validation.
+- `stage2_quality_check.txt` — Stage 2 quality-check result.
+- `stage2_tables.txt` — list of Hive tables created and used during Stage 2.
 
-db.hql
-HiveQL script used to create the main Hive database objects and optimized tables for Stage 2.
-q1.hql - q5.hql
-HiveQL scripts used to generate the five exploratory data-analysis insights required for Stage 2. Each script:
-creates a Hive result table,
-inserts the query result,
-and supports export of that result to the output/ folder.
-stage4_tables.hql
-HiveQL script used in Stage 4 to create external Hive tables over the Stage 3 model outputs.
-stage4_data_description.hql
-HiveQL script used to create the data-description and project-summary tables displayed in the final dashboard.
+#### Stage 3 Outputs
+
+Stage 3 outputs include model predictions, evaluation results, per-class metrics, and diagnostic files.
+
+Main files include:
+
+- `model1_predictions.csv`
+- `model2_predictions.csv`
+- `evaluation.csv`
+- `model1_per_class_metrics.csv`
+- `model2_per_class_metrics.csv`
+- `model1_confusion_matrix.csv`
+- `model2_confusion_matrix.csv`
+- `train_label_distribution.csv`
+- `test_label_distribution.csv`
+- `model1_prediction_distribution.csv`
+- `model2_prediction_distribution.csv`
+- `stage3_quality_check.txt`
+
+#### Stage 4 Outputs
+
+Stage 4 outputs support the final Apache Superset dashboard delivery.
+
+Main files include:
+
+- `stage4_tables.txt`
+- `stage4_data_description.txt`
+- `stage4_hive_table_list.txt`
+
+Overall, the `output/` folder is the main local destination for the final reproducible artifacts of the project.
+
+---
+
+### `scripts/`
+
+This folder contains the Bash and Python scripts that automate and execute the main parts of the pipeline.
+
+Main scripts include:
+
+- `build_hive_tables.sh` — creates the main Hive tables used in Stage 2 by executing `sql/db.hql`.
+- `run_stage2_eda.sh` — runs the Stage 2 EDA HiveQL queries and exports results to the `output/` folder.
+- `model.py` — main Spark ML script for Stage 3.
+- `run_model_yarn.sh` — runs `model.py` on Spark YARN with the required cluster settings.
+- `prepare_stage4_tables.sh` — creates dashboard-ready Hive tables and views for Stage 4.
+- `check_stage2_quality.sh` — checks Stage 2 scripts, required files, Bash syntax, and expected outputs.
+- `check_stage3_quality.sh` — checks Stage 3 scripts, required files, Python syntax, and expected outputs.
+- `check_stage4_quality.sh` — checks Stage 4 scripts, required files, and dashboard-support outputs.
+
+The `scripts/` folder contains the core execution logic behind the stage wrapper scripts.
+
+---
+
+### `sql/`
+
+This folder contains HiveQL scripts used for Hive warehouse creation, analytical query execution, and dashboard-table preparation.
+
+Main files include:
+
+- `db.hql` — creates the main Hive database objects and optimized tables for Stage 2.
+- `q1.hql` to `q5.hql` — generate the five exploratory data-analysis insights required for Stage 2.
+- `stage4_tables.hql` — creates external Hive tables over Stage 3 model outputs.
+- `stage4_data_description.hql` — creates data-description and project-summary tables used in the final dashboard.
 
 This folder contains the declarative SQL/Hive logic required by the project.
 
-7. secrets/ Folder
+---
 
-Purpose: Stores sensitive configuration files, mainly credentials used for PostgreSQL, Hive, and related services.
+### `secrets/`
 
-Contents may include:
+This folder stores sensitive configuration files used for project execution on the cluster.
 
-.psql.pass
-A plain-text file containing the PostgreSQL password.
-.hive.pass
-A plain-text file containing the Hive password, when needed.
+Possible files include:
 
-This folder should remain excluded from public version control and is used only for project execution on the cluster.
+- `.psql.pass` — PostgreSQL password file.
+- `.hive.pass` — Hive password file, when needed.
 
-Root Directory Files
-main.sh
+This folder should remain excluded from public version control and should not be exposed in the public repository.
 
-Purpose: The main entry point for executing the entire data pipeline.
+---
 
-Functionality:
-This Bash script orchestrates the execution of the individual stage scripts in the correct order:
+## Pipeline Stages
 
-stage1.sh
-stage2.sh
-stage3.sh
-stage4.sh
+### Stage 1: Data Collection, Storage, and Ingestion
 
-Usage:
+Stage 1 downloads the dataset, loads it into PostgreSQL, normalizes the schema, exports the tables to HDFS using Sqoop, and benchmarks storage formats.
 
+The tested storage formats were:
+
+1. Parquet + Snappy
+2. Avro + Snappy
+
+The final selected storage format was:
+
+**Parquet + Snappy**
+
+This format was selected because it gave faster import time, smaller HDFS size, and slightly better read performance compared with Avro + Snappy.
+
+---
+
+### Stage 2: Hive Warehouse and Exploratory Data Analysis
+
+Stage 2 creates Hive external tables and optimized analytical tables. It also runs exploratory data analysis queries to study accident patterns.
+
+The EDA includes insights about:
+
+1. Accident counts by state and severity
+2. Weather conditions and accident patterns
+3. Seasonal accident distribution
+4. Top cities by accident count and severity
+5. Road-context indicators such as junctions and traffic signals
+
+The EDA results are exported for reporting and dashboarding.
+
+---
+
+### Stage 3: Spark ML Modeling
+
+Stage 3 trains and evaluates machine learning models using Spark ML on YARN.
+
+The original accident severity labels are 1, 2, 3, and 4. For Spark ML compatibility, they are transformed into labels 0, 1, 2, and 3.
+
+The models compared are:
+
+1. Random Forest Classifier
+2. Multinomial Logistic Regression
+
+Class weighting was introduced to handle the strong imbalance in the severity labels.
+
+The final approved model is:
+
+**Weighted Multinomial Logistic Regression**
+
+It was selected because it gave a better balance between overall predictive performance and minority-class recall than the weighted Random Forest model.
+
+---
+
+### Stage 4: Superset Dashboard Deployment
+
+Stage 4 prepares dashboard-ready Hive tables and supports the final Apache Superset dashboard.
+
+The dashboard is titled:
+
+**US Accident Severity Analytics and Prediction Dashboard**
+
+The dashboard contains four main sections:
+
+1. Data Description
+2. EDA Insights
+3. ML Modeling Results
+4. Business Recommendations
+
+This dashboard presents both descriptive analytics and machine learning results in a stakeholder-friendly format.
+
+---
+
+## How to Run the Project
+
+The full project can be executed from the repository root using:
+
+```bash
+bash main.sh
+```
+
+The main script runs all project stages in sequence:
+
+```bash
+bash stage1.sh
+bash stage2.sh
+bash stage3.sh
+bash stage4.sh
+```
+
+---
+
+## Cluster Location
+
+The project was executed on the IU Hadoop cluster.
+
+Main project path on the cluster:
+
+```bash
+/home/team3/project/bigdata-accidents-project/main.sh
+```
+
+To run the full pipeline on the cluster:
+
+```bash
 cd /home/team3/project/bigdata-accidents-project
 bash main.sh
+```
 
-This script is the main script that the project evaluator is expected to run.
+---
 
-stage1.sh
+## Root Directory Files
 
-Purpose: Runs the full Stage 1 pipeline.
+### `main.sh`
 
-Functionality:
+The main entry point for executing the entire data pipeline. This script orchestrates the execution of:
+
+1. `stage1.sh`
+2. `stage2.sh`
+3. `stage3.sh`
+4. `stage4.sh`
+
+This is the main script that the project evaluator is expected to run.
+
+---
+
+### `stage1.sh`
+
+Runs the full Stage 1 pipeline.
+
 Stage 1 performs:
 
-data collection from Kaggle,
-relational storage and normalization in PostgreSQL,
-ingestion into HDFS using Sqoop,
-and storage benchmarking.
-stage2.sh
+- data collection from Kaggle;
+- relational storage and normalization in PostgreSQL;
+- ingestion into HDFS using Sqoop;
+- storage benchmarking.
 
-Purpose: Runs the full Stage 2 pipeline.
+---
 
-Functionality:
+### `stage2.sh`
+
+Runs the full Stage 2 pipeline.
+
 Stage 2 performs:
 
-Hive table creation,
-execution of EDA queries,
-export of query results,
-and generation of local output files for the five analytical insights.
-stage3.sh
+- Hive table creation;
+- execution of EDA queries;
+- export of query results;
+- generation of local output files for the five analytical insights.
 
-Purpose: Runs the full Stage 3 pipeline.
+---
 
-Functionality:
+### `stage3.sh`
+
+Runs the full Stage 3 pipeline.
+
 Stage 3 performs:
 
-Spark ML preprocessing,
-model training on YARN,
-hyperparameter tuning and model comparison,
-prediction generation,
-and export of evaluation files.
-stage4.sh
+- Spark ML preprocessing;
+- model training on YARN;
+- hyperparameter tuning and model comparison;
+- prediction generation;
+- export of evaluation files.
 
-Purpose: Runs the full Stage 4 pipeline.
+---
 
-Functionality:
+### `stage4.sh`
+
+Runs the full Stage 4 pipeline.
+
 Stage 4 performs:
 
-creation of dashboard-ready Hive tables,
-output validation for presentation artifacts,
-and support for final Apache Superset dashboard delivery.
-requirements.txt
+- creation of dashboard-ready Hive tables;
+- output validation for presentation artifacts;
+- support for final Apache Superset dashboard delivery.
 
-Purpose: Lists all Python package dependencies required to run the Python scripts used in the project.
+---
+
+### `requirements.txt`
+
+Lists the Python package dependencies required to run the Python scripts used in the project.
 
 Usage:
 
+```bash
 pip install -r requirements.txt
-README.md
+```
 
-Purpose: The primary documentation file for the project. It provides an overview of the repository, directory structure, file purposes, and execution workflow.
+---
 
-.gitignore
+### `.gitignore`
 
-Purpose: Specifies files and folders that should not be committed to version control, especially temporary files, cache files, and secrets.
+Specifies files and folders that should not be committed to version control, especially temporary files, cache files, large raw data, and secret files.
 
-Project Execution Notes
+---
+
+## Main Outputs
+
+The project generates the following outputs:
+
+- HDFS-ingested Parquet tables
+- Hive analytical tables
+- EDA query results
+- Superset dashboard charts
+- Train and test datasets
+- Trained Spark ML models
+- Model predictions
+- Evaluation metrics
+- Confusion matrices
+- Per-class performance reports
+- Stage 4 dashboard-ready tables
+
+---
+
+## Model Evaluation Summary
+
+The final evaluation showed that the weighted Logistic Regression model outperformed the weighted Random Forest model in the most important business-aware metrics.
+
+The weighted Logistic Regression model improved recall for less frequent severity classes. However, this came with lower precision for minority classes.
+
+Therefore, the final model is best used as a **decision-support tool** rather than as a fully automated operational system.
+
+---
+
+## Deployment
+
+The project is deployed as a reproducible analytical pipeline and dashboard-ready reporting system.
+
+It does not expose a real-time prediction API. Instead, it provides a complete batch-processing workflow that can be rerun from the repository root.
+
+The final deployment output includes the Apache Superset dashboard and the saved analytical/modeling artifacts.
+
+---
+
+## Project Execution Notes
 
 The project is designed to be reproducible and rerunnable.
+
 For example:
 
-rerunning stage1.sh should not fail because old objects are cleared before recreation,
-later stages are written to regenerate outputs cleanly,
-helper scripts are designed to be executed from the project root.
+- rerunning `stage1.sh` should not fail because old objects are cleared before recreation;
+- later stages are written to regenerate outputs cleanly;
+- helper scripts are designed to be executed from the project root.
 
 The main path of the project on the cluster is:
 
+```bash
 /home/team3/project/bigdata-accidents-project
+```
 
 The required path of the main entry-point script is:
 
+```bash
 /home/team3/project/bigdata-accidents-project/main.sh
-Final Outputs and Dashboard
+```
 
-The final project includes:
+---
 
-a complete data-processing pipeline,
-Hive-based analytical outputs,
-Spark ML predictive outputs,
-saved trained models,
-and a published Apache Superset dashboard.
+## Project Artifacts
 
-The published dashboard is titled:
+The final project submission includes:
 
-US Accident Severity Analytics and Prediction Dashboard
+- GitHub repository
+- Detailed project report
+- Pitch presentation
+- Recorded presentation
+
+---
+
+## Team Members
+
+- **Gisele Wiykiynyuy Sikeh**
+- **Tivdzua Lubem Noah**
+
+---
+
+## Course
+
+**Big Data Technologies and Analytics**  
+**Innopolis University**  
+**Spring 2026**
+
+---
+
+## Final Dashboard
+
+The published Apache Superset dashboard is titled:
+
+**US Accident Severity Analytics and Prediction Dashboard**
 
 It presents:
 
-data-description outputs,
-EDA insights,
-machine-learning modeling results,
-and business-facing recommendations.
+- data-description outputs;
+- EDA insights;
+- machine-learning modeling results;
+- business-facing recommendations.
 
 This makes the repository suitable not only for technical reruns, but also for final project presentation and stakeholder communication.
