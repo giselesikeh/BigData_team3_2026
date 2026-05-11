@@ -80,6 +80,7 @@ BigData_team3_2026/
 ├── data/
 ├── models/
 ├── logs/
+├── generated_avro/
 ├── secrets/
 ├── requirements.txt
 ├── README.md
